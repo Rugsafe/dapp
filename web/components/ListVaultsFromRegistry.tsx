@@ -16,8 +16,16 @@ const deriveStateAccountPDA = async (programId: PublicKey) => {
     return stateAccountPDA;
 };
 
+interface Vault {
+    vaultAccount: string;
+    mintTokenAAccount: string;
+    mintATokenAAccount: string;
+    owner: string;
+}
+
 const ListVaultsFromRegistry = () => {
-    const [vaults, setVaults] = useState([]);
+    // const [vaults, setVaults] = useState([]);
+    const [vaults, setVaults] = useState<Vault[]>([]);
     const [balances, setBalances] = useState({});
     const wallet = useWallet();
     const connection = new Connection(LOCALHOST_URL, 'confirmed');
@@ -86,7 +94,7 @@ const ListVaultsFromRegistry = () => {
     // };
 
     const fetchBalances = async (vaults: any) => {
-        const newBalances: { [key: string]: { userTokenBalance: string,  vaultTokenBalance: string} } = {};
+        const newBalances: { [key: string]: { userTokenBalance: string, userATokenBalance: string, vaultTokenBalance: string } } = {};
 
     
         for (const vault of vaults) {
