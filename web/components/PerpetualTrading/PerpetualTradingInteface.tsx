@@ -9,10 +9,11 @@ import { useSolanaProgram } from '../../hooks/useSolanaProgram';
 const PerpetualTradingInterface: React.FC = () => {
   const [selectedSymbol, setSelectedSymbol] = useState('ETHUSDT');
   const [currentPrice, setCurrentPrice] = useState(2640);
-  const { userPositions, balance, placeOrder } = useSolanaProgram();
+  const { userPositions, balance, loading, placeOrder } = useSolanaProgram();
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white">
+      {loading && <div>Loading...</div>}
       <div className="flex-grow flex">
         <div className="w-3/4 p-4 flex flex-col">
           <div className="mb-4 flex justify-between items-center">
@@ -22,6 +23,8 @@ const PerpetualTradingInterface: React.FC = () => {
             </div>
           </div>
           <TradingChart symbol={selectedSymbol} />
+          
+          {/* Show PositionsTable if userPositions exist */}
           {userPositions && (
             <PositionsTable 
               positions={userPositions.positions} 
@@ -29,6 +32,7 @@ const PerpetualTradingInterface: React.FC = () => {
             />
           )}
         </div>
+
         <div className="w-1/4 p-4 border-l border-gray-700 flex flex-col">
           <OrderForm 
             placeOrder={placeOrder}

@@ -1,4 +1,5 @@
 "use client"
+
 import React, { useState } from 'react';
 import { Side } from '../../types';
 
@@ -11,15 +12,12 @@ interface OrderFormProps {
 }
 
 const OrderForm: React.FC<OrderFormProps> = ({ placeOrder, symbol, balance, maxPositions, openPositionsCount }) => {
-  const [orderType, setOrderType] = useState<'Market' | 'Limit'>('Market');
   const [size, setSize] = useState('');
-  const [limitPrice, setLimitPrice] = useState('');
-
+  
   const handlePlaceOrder = async (side: Side) => {
     try {
       await placeOrder(side, Number(size), symbol);
-      setSize('');
-      setLimitPrice('');
+      setSize('');  // Clear the input after order
     } catch (error) {
       console.error('Failed to place order:', error);
       alert('Failed to place order. Please try again.');
@@ -28,20 +26,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ placeOrder, symbol, balance, maxP
 
   return (
     <div className="mt-auto">
-      <div className="flex mb-2">
-        <button 
-          className={`flex-1 py-2 px-4 ${orderType === 'Market' ? 'bg-blue-500' : 'bg-gray-700'} rounded-l`}
-          onClick={() => setOrderType('Market')}
-        >
-          Market
-        </button>
-        <button 
-          className={`flex-1 py-2 px-4 ${orderType === 'Limit' ? 'bg-blue-500' : 'bg-gray-700'} rounded-r`}
-          onClick={() => setOrderType('Limit')}
-        >
-          Limit
-        </button>
-      </div>
       <input
         type="number"
         placeholder="Size"
@@ -49,15 +33,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ placeOrder, symbol, balance, maxP
         value={size}
         onChange={(e) => setSize(e.target.value)}
       />
-      {orderType === 'Limit' && (
-        <input
-          type="number"
-          placeholder="Limit Price"
-          className="w-full bg-gray-700 p-2 rounded mb-2"
-          value={limitPrice}
-          onChange={(e) => setLimitPrice(e.target.value)}
-        />
-      )}
+      
       <div className="flex mb-2">
         <button 
           className="flex-1 bg-green-500 py-2 px-4 rounded-l"
@@ -72,6 +48,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ placeOrder, symbol, balance, maxP
           Sell / Short
         </button>
       </div>
+
       <div className="flex justify-between text-sm mb-2">
         <span>Available Balance</span>
         <span>${balance.toFixed(2)}</span>
