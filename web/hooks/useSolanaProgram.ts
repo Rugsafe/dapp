@@ -100,6 +100,9 @@ export const useSolanaProgram = () => {
             const instructionData = Buffer.alloc(9);
             instructionData.writeUInt8(side === Side.Long ? 0 : 1, 0); // 0 for Long, 1 for Short
             instructionData.writeBigUInt64LE(BigInt(size), 1);  // Position size
+            
+            const openPositionInstructionData = Buffer.from([1, 0, side === Side.Long ? 0 : 1, 1]);
+
 
             // Create the transaction instruction
             const instruction = new TransactionInstruction({
@@ -114,12 +117,19 @@ export const useSolanaProgram = () => {
                     { pubkey: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'), isSigner: false, isWritable: false }, // SPL Token Program ID
                 ],
                 programId,
-                data: instructionData,
+                // data: instructionData,
+                data: openPositionInstructionData
             });
+
+            console.log("instruction")
+            console.log(instruction)
+            console.log("programId")
+            console.log(programId.toBase58())
 
             // Create the transaction and sign it
             const transaction = new Transaction().add(instruction);
-            transaction.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
+            // window.alert(await connection.getRecentBlockhash())
+            transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
             transaction.feePayer = wallet.publicKey;
 
             const signedTransaction = await wallet.signTransaction(transaction);

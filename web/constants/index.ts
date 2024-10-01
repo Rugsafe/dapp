@@ -28,6 +28,6 @@ export const MAX_POSITIONS: number = 10;
 export const LOCALHOST_URL = 'http://127.0.0.1:8899';
 
 // Function to get the appropriate connection URL
-export const getConnectionUrl = (useLocalhost: boolean = false): string => {
+export const getConnectionUrl = (useLocalhost: boolean = true): string => {
   return useLocalhost ? LOCALHOST_URL : NETWORK_URL;
 };
