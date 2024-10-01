@@ -7,7 +7,9 @@ const LOCALHOST_URL = 'http://127.0.0.1:8899';
 
 const SPL_TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 // const CONTRACT_PROGRAM_ID = 'AVFEXtCiwxuBHuMUsnFGoFB44ymVAbMn3QsN6f6pw5yA';
-const CONTRACT_PROGRAM_ID = 'FobNvbQsK5BAniZC2oJhXakjcPiArpsthTGDnX9eHDVY';
+// const CONTRACT_PROGRAM_ID = 'FobNvbQsK5BAniZC2oJhXakjcPiArpsthTGDnX9eHDVY';
+const CONTRACT_PROGRAM_ID = "3G5qWYYUBdc79hYTZqQ2TX2cvFxVgbhuSFcm7APispCw"
+
 // const CONTRACT_PROGRAM_ID = '7kaX5wHo7iyG99uG91aAxnFgi55ZBhSZuGaxp8x3qqDv'
 const CreateVault = () => {
     // const [mintPubkey, setMintPubkey] = useState<Keypair | null>(null);
@@ -24,7 +26,8 @@ const CreateVault = () => {
             // Generate a new mint public key if it hasn't been set
             // const newMintKeypair = Keypair.generate();
             // const newMintKeypair = new PublicKey("3JR13Th4Lp7Y6nBhj2LP1mMciQG4ZJoT3t9rF2D5xjNq");
-            const newMintKeypair = new PublicKey("DG3jdET19heUQjp8fdL54FBvFd5oFWZZjCG8XgmFAHQJ");
+            // const newMintKeypair = new PublicKey("DG3jdET19heUQjp8fdL54FBvFd5oFWZZjCG8XgmFAHQJ");
+            const newMintKeypair = new PublicKey("BxLfds7shG7mMaM8pM3AySJJBsvcWo4yvWRvcky4uRzB");
             setMintPubkey(newMintKeypair);
             console.log('Generated new mint public key:', newMintKeypair.toBase58());
         }

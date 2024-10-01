@@ -149,7 +149,8 @@ export async function createVault(
     // Generate keypair for Token A mint
     // const mintTokenAKeypair = Keypair.generate();
     // const mintTokenAPubkey = mintTokenAKeypair.publicKey;
-    const mintTokenAPubkey = new PublicKey("DG3jdET19heUQjp8fdL54FBvFd5oFWZZjCG8XgmFAHQJ");
+    // const mintTokenAPubkey = new PublicKey("DG3jdET19heUQjp8fdL54FBvFd5oFWZZjCG8XgmFAHQJ");
+    const mintTokenAPubkey = new PublicKey("WQgfFKMeNyuANha2hsuCxgP36Qwfo2L8PGReAD1jBPp")
 
     // Generate keypair for AToken A mint
     const mintATokenAKeypair = Keypair.generate();
@@ -189,7 +190,7 @@ export async function createVault(
 
     const [pda, _bump] = await PublicKey.findProgramAddress([Buffer.from('vault_registry')], programId);
 
-    const createVaultInstructionData = Buffer.from([0]);
+    const createVaultInstructionData = Buffer.from([0, 0]);
     // TODOD, switch out for
     // const user_token_a_account = new PublicKey("Dof5p3fEhZhXttrPeEPiKwLoac5ftRyJJnma24ZYF4qZ")
     const user_token_a_account = await getAssociatedTokenAddress(new PublicKey(mintTokenAPubkey), wallet.publicKey as PublicKey);
@@ -361,7 +362,7 @@ export async function deposit(
     console.log("bump", bump);
 
     // Prepare the instruction data
-    const data = Buffer.from([1, ...new Uint8Array(new BN(depositAmount).toArray('le', 8))]);
+    const data = Buffer.from([0, 1, ...new Uint8Array(new BN(depositAmount).toArray('le', 8))]);
 
     const depositInstruction = new TransactionInstruction({
         programId,
@@ -483,7 +484,7 @@ export const callFaucet = async (
     console.log("User Token Account:", userTokenAccount.toBase58());
 
     const amount = 1000;
-    const data = Buffer.from([4, ...new Uint8Array(new BN(amount).toArray('le', 8))]);
+    const data = Buffer.from([0, 4, ...new Uint8Array(new BN(amount).toArray('le', 8))]);
 
     const transaction = new Transaction();
 
