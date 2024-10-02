@@ -9,27 +9,33 @@ const AdvancedRealTimeChart = dynamic<AdvancedRealTimeChartProps>(
   { ssr: false }
 );
 
-interface TradingChartProps {
-  symbol: string;
-}
-
-const TradingChart: React.FC<TradingChartProps> = ({ symbol }) => (
-  <div className="flex-grow" style={{ minHeight: '400px', maxHeight: '60vh' }}>
-    <AdvancedRealTimeChart
-      theme="dark"
-      autosize
-      symbol={`BINANCE:${symbol}`}
-      interval="60"
-      timezone="Etc/UTC"
-      style="1"
-      locale="en"
-      toolbar_bg="#f1f3f6"
-      enable_publishing={false}
-      allow_symbol_change={true}
-      container_id="tradingview_chart"
-      withdateranges={true}
-    />
-  </div>
-);
+const TradingChart: React.FC = () => {
+  return (
+    <div className="trading-chart-container" style={{
+      width: '100%',
+      height: '100%',
+      backgroundColor: '#131722',
+      color: 'white',
+      overflow: 'hidden'
+    }}>
+      <AdvancedRealTimeChart
+        theme="dark"
+        autosize
+        symbol="BINANCE:ETHUSDT"
+        interval="60"
+        timezone="Etc/UTC"
+        style="1"
+        locale="en"
+        toolbar_bg="#131722"
+        enable_publishing={false}
+        allow_symbol_change={false}
+        hide_top_toolbar={false}
+        hide_legend={false}
+        save_image={false}
+        withdateranges
+      />
+    </div>
+  );
+};
 
 export default TradingChart;

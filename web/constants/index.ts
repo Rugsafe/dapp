@@ -17,7 +17,9 @@ export const NETWORK_URL = clusterApiUrl(CURRENT_NETWORK);
 export const CONTRACT_PROGRAM_ID: PublicKey = new PublicKey('FobNvbQsK5BAniZC2oJhXakjcPiArpsthTGDnX9eHDVY');
 
 // Collateral token mint
-export const COLLATERAL_MINT: PublicKey = new PublicKey('YourCollateralMintPublicKeyHere');
+// Example with a valid base58-encoded PublicKey (replace this with your actual key)
+export const COLLATERAL_MINT: PublicKey = new PublicKey('5sph4gbR4zp4zZpaDqYUsiqvDNyAHzZRzNu9M1gJsk3a');
+
 
 // Maximum number of positions
 export const MAX_POSITIONS: number = 10;
