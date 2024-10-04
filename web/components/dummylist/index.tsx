@@ -2,7 +2,25 @@ import React from 'react';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 
-const vaults = [
+// Define the interface for the vault
+interface Vault {
+  name: string;
+  description: string;
+  icon: string;
+  chain: string;
+  estApy: {
+    current: number;
+    boost?: number | null;
+  };
+  histApy: number;
+  available: number;
+  holdings: number;
+  deposits: number;
+  additionalInfo?: string;
+}
+
+// Sample vault data
+const vaults: Vault[] = [
   {
     name: 'DAI',
     description: 'Dai Stablecoin',
@@ -50,7 +68,8 @@ const vaults = [
   },
 ];
 
-const VaultItem = ({ vault }) => (
+// Define the VaultItem component with the correct type for the 'vault' prop
+const VaultItem: React.FC<{ vault: Vault }> = ({ vault }) => (
   <Link href="/components/NewListVault" className="block">
     <div className="bg-gradient-to-r from-purple-900 to-blue-900 rounded-lg p-4 hover:from-purple-600 hover:to-pink-600 transition-all duration-300 cursor-pointer">
       <div className="flex items-center justify-between">
@@ -95,6 +114,7 @@ const VaultItem = ({ vault }) => (
   </Link>
 );
 
+// Main component to render the list of vaults
 const NewVaultList = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-900">

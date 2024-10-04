@@ -3,8 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "nx build web",
-    "dev": "nx serve web"
+   "build": "nx run web:build", 
+    "dev": "nx serve web",       
+    "start": "nx run web:start", 
+    "lint": "nx run web:lint",
+    "export": "nx run web:export"  
   },
   "private": true,
   "dependencies": {

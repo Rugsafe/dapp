@@ -8,6 +8,21 @@ const LOCALHOST_URL = 'http://127.0.0.1:8899';
 // const CONTRACT_PROGRAM_ID = 'AVFEXtCiwxuBHuMUsnFGoFB44ymVAbMn3QsN6f6pw5yA';
 const CONTRACT_PROGRAM_ID = 'FobNvbQsK5BAniZC2oJhXakjcPiArpsthTGDnX9eHDVY';
 
+
+interface Vault {
+    vaultAccount: string;
+    mintTokenAAccount: string;
+    mintATokenAAccount: string;
+    owner: string;
+}
+
+interface Balances {
+    userTokenBalance: string;
+    userATokenBalance?: string;  // Add this if it's optional
+    vaultTokenBalance: string;
+  }
+  
+
 const deriveStateAccountPDA = async (programId: PublicKey) => {
     const [stateAccountPDA, _] = await PublicKey.findProgramAddress(
         [Buffer.from('vault_registry')],
@@ -16,9 +31,9 @@ const deriveStateAccountPDA = async (programId: PublicKey) => {
     return stateAccountPDA;
 };
 
-const ListVaultsFromRegistry = () => {
-    const [vaults, setVaults] = useState([]);
-    const [balances, setBalances] = useState({});
+const ListVaultsFromRegistry: React.FC = () => {
+    const [vaults, setVaults] = useState<Vault[]>([]);
+    const [balances, setBalances] = useState<{[key: string]: Balances}>({});
     const wallet = useWallet();
     const connection = new Connection(LOCALHOST_URL, 'confirmed');
 
@@ -85,69 +100,41 @@ const ListVaultsFromRegistry = () => {
     //     setBalances(newBalances);
     // };
 
-    const fetchBalances = async (vaults: any) => {
-        const newBalances: { [key: string]: { userTokenBalance: string,  vaultTokenBalance: string} } = {};
-
+    const fetchBalances = async (vaults: Vault[]) => {
+        const newBalances: { [key: string]: Balances } = {};
     
         for (const vault of vaults) {
             try {
                 console.log(`vault ${vault}`);
-                console.log(vault)
+                console.log(vault);
                 console.log(`Fetching balances for vault ${vault.vaultAccount}`);
                 console.log(`Vault Account: ${vault.vaultAccount}`);
     
-                // Ensure token accounts exist before attempting to fetch balances
-                // if (!vault.userTokenAccount || !vault.userATokenAccount) {
-                //     console.error(`Vault ${vault.vaultAccount} is missing token accounts`);
-                //     continue; // Skip this vault and move on to the next
-                // }
+                // Generate associated token account addresses dynamically
+                const userTokenAccount = await getAssociatedTokenAddress(
+                    new PublicKey(vault.mintTokenAAccount),
+                    wallet.publicKey as PublicKey
+                );
     
-                // Generate associated token account addresses dynamically 
-                const userTokenAccount = await getAssociatedTokenAddress(new PublicKey(vault.mintTokenAAccount), wallet.publicKey as PublicKey);
-                // const userTokenAccount = await getAssociatedTokenAddress(new PublicKey(wallet.publicKey as PublicKey), wallet.publicKey as PublicKey);
-                // const userTokenAccount = new PublicKey("43MJ8hVyFQBoNw2Qm8WnYVfrZkfEVjGUNnRDuBjTj9kg")
-
-
-                const userATokenAccount = await getAssociatedTokenAddress(new PublicKey(vault.mintATokenAAccount), wallet.publicKey as PublicKey);
-                // window.alert(userTokenAccount)
-                // window.alert(userATokenAccount)
-
-                
-                // v1
-                console.log("DEV: userTokenAccount:", userTokenAccount.toBase58())
-                console.log("DEV: userATokenAccount:", userATokenAccount.toBase58())
-                // const userTokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey("43MJ8hVyFQBoNw2Qm8WnYVfrZkfEVjGUNnRDuBjTj9kg"));
-                // const userATokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey("FuR8C3cwrmdUnV3r4KcGNxNzvdFvfaYZKxasCw1szbCf"));
-
-                // v2
-                const userTokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey(userTokenAccount));
-                const userATokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey(userATokenAccount));
-
-                // TODO: SHOULD BE VAULT ACCOUNT - Vault Account: Dof5p3fEhZhXttrPeEPiKwLoac5ftRyJJnma24ZYF4qZ
-                // const vaultTokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey("Dof5p3fEhZhXttrPeEPiKwLoac5ftRyJJnma24ZYF4qZ"));
+                const userATokenAccount = await getAssociatedTokenAddress(
+                    new PublicKey(vault.mintATokenAAccount),
+                    wallet.publicKey as PublicKey
+                );
+    
+                console.log("DEV: userTokenAccount:", userTokenAccount.toBase58());
+                console.log("DEV: userATokenAccount:", userATokenAccount.toBase58());
+    
+                const userTokenAccountBalance = await connection.getTokenAccountBalance(userTokenAccount);
+                const userATokenAccountBalance = await connection.getTokenAccountBalance(userATokenAccount);
                 const vaultTokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey(vault.vaultAccount));
-
-
-
-                console.log(`userTokenAccountBalance: ${userTokenAccountBalance.value.uiAmount}`);
-                console.log(`vaultTokenAccountBalance: ${userTokenAccountBalance.value.uiAmount}`);
-                // 
-                // const userTokenAccountBalance2 = await connection.getTokenAccountBalance(new PublicKey(
-                //     // "3JR13Th4Lp7Y6nBhj2LP1mMciQG4ZJoT3t9rF2D5xjNq" // static account
-                //     // "3JR13Th4Lp7Y6nBhj2LP1mMciQG4ZJoT3t9rF2D5xjNq" // static account
-                //     "DG3jdET19heUQjp8fdL54FBvFd5oFWZZjCG8XgmFAHQJ"
-                // ));
-
-                
     
-                // console.log(`User Token Balance: ${userTokenAccountBalance.value.uiAmount}`);
-                // console.log(`User aToken Balance: ${userATokenAccountBalance.value.uiAmount}`);
-                // console.log(`Vault Token Balance: ${vaultTokenAccountBalance.value.uiAmount}`);
-                // console.log(`Vault Token Balance: ${userTokenAccountBalance2.value.uiAmount}`);
-
+                console.log(`userTokenAccountBalance: ${userTokenAccountBalance.value.uiAmount}`);
+                console.log(`userATokenAccountBalance: ${userATokenAccountBalance.value.uiAmount}`);
+                console.log(`vaultTokenAccountBalance: ${vaultTokenAccountBalance.value.uiAmount}`);
+    
                 newBalances[vault.vaultAccount] = {
                     userTokenBalance: userTokenAccountBalance.value.amount,
-                    userATokenBalance: userATokenAccountBalance.value.amount,
+                    userATokenBalance: userATokenAccountBalance.value.amount,  // Now correctly typed
                     vaultTokenBalance: vaultTokenAccountBalance.value.amount,
                 };
             } catch (error) {
@@ -155,12 +142,10 @@ const ListVaultsFromRegistry = () => {
             }
         }
     
-        // window.alert("setting balances")
-        console.log("newBalances:", newBalances)
+        console.log("newBalances:", newBalances);
         setBalances(newBalances);
     };
     
-
 
     const handleDeposit = async (vault: {
         mintTokenAAccount: string, 
@@ -285,12 +270,12 @@ const ListVaultsFromRegistry = () => {
                                 >
                                     Deposit
                                 </button>
-                                <button
+                                {/* <button
                                     className="bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded-md transition flex-1 mx-2"
                                     onClick={() => handleBurn(vault)}
                                 >
                                     Burn
-                                </button>
+                                </button> */}
                                 <button
                                     className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition w-full ml-2"
                                     onClick={() => handleWithdraw(vault.vaultAccount)}
