@@ -6,7 +6,8 @@ import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_I
 
 const LOCALHOST_URL = 'http://127.0.0.1:8899';
 // const CONTRACT_PROGRAM_ID = 'AVFEXtCiwxuBHuMUsnFGoFB44ymVAbMn3QsN6f6pw5yA';
-const CONTRACT_PROGRAM_ID = 'FobNvbQsK5BAniZC2oJhXakjcPiArpsthTGDnX9eHDVY';
+// const CONTRACT_PROGRAM_ID = 'FobNvbQsK5BAniZC2oJhXakjcPiArpsthTGDnX9eHDVY';
+const CONTRACT_PROGRAM_ID = "3G5qWYYUBdc79hYTZqQ2TX2cvFxVgbhuSFcm7APispCw"
 
 const deriveStateAccountPDA = async (programId: PublicKey) => {
     const [stateAccountPDA, _] = await PublicKey.findProgramAddress(

@@ -1,22 +1,27 @@
-// hooks/useSolanaProgram.ts
-import { useState, useEffect, useCallback } from 'react';
-import { Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
+import { useState, useEffect } from 'react';
+import { Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { UserPositions, Side, OrderBookEntry } from '../types';
-import { fetchUserPositions, fetchOrderBook } from '../utils/solanaUtils';
-import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { LOCALHOST_URL, getConnectionUrl, CONTRACT_PROGRAM_ID, COLLATERAL_MINT, MAX_POSITIONS } from '../constants';
+import { UserPositions, Side } from '../types';
+import { fetchUserPositions } from '../utils/solanaUtils';
+import { getAssociatedTokenAddress } from '@solana/spl-token';
+import { LOCALHOST_URL, getConnectionUrl, PERP_CONTRACT_PROGRAM_ID, COLLATERAL_MINT, MAX_POSITIONS } from '../constants';
 
 export const useSolanaProgram = () => {
     const [userPositions, setUserPositions] = useState<UserPositions | null>(null);
     const [balance, setBalance] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [orderBook, setOrderBook] = useState<{ bids: OrderBookEntry[], asks: OrderBookEntry[] }>({ bids: [], asks: [] });
-
+    const [loading, setLoading] = useState<boolean>(false);  // Track loading state for UI feedback
     const wallet = useWallet();
     const connection = new Connection(getConnectionUrl(), 'confirmed');
 
-    const fetchUserData = useCallback(async () => {
+    // Fetch positions and balance once the wallet is connected
+    useEffect(() => {
+        if (wallet.publicKey) {
+            fetchUserData();
+        }
+    }, [wallet.publicKey]);
+
+    // Function to fetch both user positions and balance
+    const fetchUserData = async () => {
         if (!wallet.publicKey) return;
         setLoading(true);
         try {
@@ -26,14 +31,15 @@ export const useSolanaProgram = () => {
         } finally {
             setLoading(false);
         }
-    }, [wallet.publicKey]);
+    };
 
+    // Fetch user positions
     const fetchPositions = async () => {
         if (!wallet.publicKey) return;
         try {
             const [userPositionsPDA] = await PublicKey.findProgramAddress(
                 [Buffer.from('user_positions'), wallet.publicKey.toBuffer()],
-                new PublicKey(CONTRACT_PROGRAM_ID)
+                new PublicKey(PERP_CONTRACT_PROGRAM_ID)
             );
             const positions = await fetchUserPositions(connection, userPositionsPDA);
             setUserPositions(positions);
@@ -42,119 +48,158 @@ export const useSolanaProgram = () => {
         }
     };
 
+    // Fetch SOL balance of the wallet
     const fetchBalance = async () => {
         if (!wallet.publicKey) return;
         try {
             const lamports = await connection.getBalance(wallet.publicKey);
-            setBalance(lamports / 1e9);
+            setBalance(lamports / 1e9);  // Convert from lamports to SOL
         } catch (error) {
             console.error('Error fetching balance:', error);
         }
     };
 
-    useEffect(() => {
-        if (wallet.publicKey) {
-            fetchUserData();
-        }
-    }, [wallet.publicKey, fetchUserData]);
 
-    useEffect(() => {
-        const fetchOrderBookData = async () => {
-            const orderBookData = await fetchOrderBook(connection, new PublicKey(CONTRACT_PROGRAM_ID));
-            setOrderBook(orderBookData);
-        };
+const placeOrder = async (side: Side, size: number, symbol: string) => {
+    if (!wallet.publicKey || !wallet.signTransaction) return;
+    if (isNaN(size) || size <= 0) {
+        throw new Error('Invalid order size');
+    }
 
-        fetchOrderBookData();
-        const interval = setInterval(fetchOrderBookData, 5000); // Update every 5 seconds
-
-        return () => clearInterval(interval);
-    }, [connection]);
-
-    const placeOrder = async (side: Side, size: number, symbol: string) => {
-        if (!wallet.publicKey || !wallet.signTransaction) {
-            throw new Error('Wallet not connected');
-        }
-
-        if (isNaN(size) || size <= 0) {
-            throw new Error('Invalid order size');
-        }
-
+    try {
         setLoading(true);
-        try {
-            console.log(`Placing ${side === Side.Long ? 'Long' : 'Short'} order for ${size} ${symbol}`);
 
-            const collateralMint = new PublicKey(COLLATERAL_MINT);
-            const programId = new PublicKey(CONTRACT_PROGRAM_ID);
+        const programId = new PublicKey(PERP_CONTRACT_PROGRAM_ID);
+        const collateralMint = new PublicKey(COLLATERAL_MINT);
 
-            const custodyAccount = await getAssociatedTokenAddress(
-                collateralMint,
-                programId
-            );
+        // Derive the Custody Account for the collateral mint (associated token account)
+        // const custodyAccount = await getAssociatedTokenAddress(collateralMint, programId);
+        // console.log('Custody Account:', custodyAccount.toBase58());
+        const [custodyPDA, custodyBump] = await PublicKey.findProgramAddress(
+            [Buffer.from('custody'), wallet.publicKey.toBuffer()],
+            programId
+        );
+        const custodyAccount = custodyPDA;
+        console.log('Custody PDA:', custodyAccount.toBase58());
 
-            const userTokenAccount = await getAssociatedTokenAddress(
-                collateralMint,
-                wallet.publicKey
-            );
+        // Derive the user's associated token account for the collateral mint
+        const userTokenAccount = await getAssociatedTokenAddress(collateralMint, wallet.publicKey);
+        console.log('User Token Account:', userTokenAccount.toBase58());
 
-            const [userPositionsPDA] = await PublicKey.findProgramAddress(
-                [Buffer.from('user_positions'), wallet.publicKey.toBuffer()],
-                programId
-            );
+        // Derive the User Positions PDA
+        const [userPositionsPDA] = await PublicKey.findProgramAddress(
+            [Buffer.from('user_positions'), wallet.publicKey.toBuffer()],
+            programId
+        );
 
-            const [positionPDA] = await PublicKey.findProgramAddress(
-                [
-                    Buffer.from('position'),
-                    wallet.publicKey.toBuffer(),
-                    Buffer.from(userPositions ? userPositions.next_position_idx.toString() : '0')
-                ],
-                programId
-            );
+        // Get the next position index from userPositions or set it to 0 if none exists
+        const nextPositionIndex = userPositions ? userPositions.next_position_idx : 0;
 
-            const instructionData = Buffer.alloc(9);
-            instructionData.writeUInt8(side === Side.Long ? 0 : 1, 0);
-            instructionData.writeBigUInt64LE(BigInt(size), 1);
+        console.log("nextPositionIndex: ", nextPositionIndex)
+        // Derive the Position PDA for the new position
+        const [positionPDA0] = await PublicKey.findProgramAddress(
+            [
+                Buffer.from('position'), 
+                wallet.publicKey.toBuffer(), 
+                Buffer.from(nextPositionIndex.toString())
+            ],
+            programId
+        );
 
-            const instruction = new TransactionInstruction({
-                keys: [
-                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
-                    { pubkey: userPositionsPDA, isSigner: false, isWritable: true },
-                    { pubkey: userTokenAccount, isSigner: false, isWritable: true },
-                    { pubkey: collateralMint, isSigner: false, isWritable: false },
-                    { pubkey: custodyAccount, isSigner: false, isWritable: true },
-                    { pubkey: positionPDA, isSigner: false, isWritable: true },
-                    { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-                    { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-                    { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-                    { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-                    { pubkey: programId, isSigner: false, isWritable: false },
-                ],
-                programId,
-                data: instructionData,
-            });
+        const nextPositionIndexBuffer = Buffer.alloc(8);
+        nextPositionIndexBuffer.writeBigUInt64LE(BigInt(nextPositionIndex));
+        const [positionPDA] = await PublicKey.findProgramAddress(
+            [
+                Buffer.from('position'),
+                wallet.publicKey.toBuffer(),
+                nextPositionIndexBuffer
+            ],
+            programId
+        );
 
-            const transaction = new Transaction().add(instruction);
-            transaction.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
-            transaction.feePayer = wallet.publicKey;
+        console.log(positionPDA0.toBase58())
+        console.log(positionPDA.toBase58())
+        
 
-            const signedTransaction = await wallet.signTransaction(transaction);
-            const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+        // Create the instruction data for the OpenPosition call
+        // const instructionData = Buffer.alloc(11);
+        // instructionData.writeUInt8(0, 0); // Module tag for Perpetuals
+        // instructionData.writeUInt8(0, 1); // Instruction tag for OpenPosition
+        // instructionData.writeUInt8(side === Side.Long ? 0 : 1, 2); // Side byte: 0 for Long, 1 for Short
+        // instructionData.writeBigUInt64LE(BigInt(size), 3);  // Amount as u64 in little-endian (8 bytes)
 
-            await connection.confirmTransaction(signature);
-            console.log('Transaction signature:', signature);
+        // Create the instruction data for the OpenPosition call (11 bytes)
+        const instructionData = Buffer.alloc(11);
 
-            await fetchPositions();
-            await fetchBalance();
-            const orderBookData = await fetchOrderBook(connection, new PublicKey(CONTRACT_PROGRAM_ID));
-            setOrderBook(orderBookData);
+        // Module tag (byte 0)
+        instructionData.writeUInt8(0, 0); // Module tag for Perpetuals (replace with actual tag)
 
-            console.log('Order placed successfully.');
-        } catch (error) {
-            console.error('Error placing order:', error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+        // Instruction tag (byte 1)
+        instructionData.writeUInt8(0, 1); // Instruction tag for OpenPosition (replace with actual tag)
 
-    return { userPositions, balance, loading, placeOrder, orderBook };
+        // Side: Long or Short (byte 2)
+        instructionData.writeUInt8(side === Side.Long ? 1 : 2, 2); // 1 for Long, 2 for Short
+
+        // Amount (size) as u64 in little-endian format (bytes 3 to 10)
+        instructionData.writeBigUInt64LE(BigInt(size), 3);
+
+        // Ensure account order matches the Rust test!
+        console.log(programId.toBase58())
+        const instruction = new TransactionInstruction({
+            keys: [
+                { pubkey: wallet.publicKey, isSigner: true, isWritable: true },  // Payer (user)
+                { pubkey: userPositionsPDA, isSigner: false, isWritable: true }, // User's positions PDA
+                { pubkey: userTokenAccount, isSigner: false, isWritable: true }, // User's collateral token account
+                { pubkey: collateralMint, isSigner: false, isWritable: false },  // Collateral mint (readonly)
+                { pubkey: custodyAccount, isSigner: false, isWritable: true },   // Custody token account
+                { pubkey: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'), isSigner: false, isWritable: false }, // SPL Token Program
+                { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, // System Program
+                { pubkey: new PublicKey('SysvarRent111111111111111111111111111111111'), isSigner: false, isWritable: false },  // Rent sysvar
+                { pubkey: new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'), isSigner: false, isWritable: false },  // Associated token program
+                { pubkey: programId, isSigner: false, isWritable: false }, // **Missing program ID**
+                { pubkey: positionPDA, isSigner: false, isWritable: true }, // Position PDA
+            ],
+            programId,
+            data: instructionData,
+        });
+
+        console.log("instruction")
+        console.log(instruction)
+        // Create the transaction, fetch the blockhash right before adding it
+        // Get recent blockhash
+        const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+        console.log(blockhash)
+        console.log(lastValidBlockHeight)
+        // Create the transaction and assign fee payer and blockhash
+        const transaction = new Transaction().add(instruction);
+        transaction.recentBlockhash = blockhash;
+        transaction.feePayer = wallet.publicKey;
+
+        // Sign and send the transaction with more control
+        const signature = await wallet.sendTransaction(
+            transaction,
+            connection,
+            {
+                skipPreflight: true,
+                preflightCommitment: 'singleGossip', // Modify preflight strategy as needed
+                signers: [] 
+            }
+        );
+
+        // Confirm the transaction
+        await connection.confirmTransaction(signature, 'confirmed');
+        console.log('Order placed successfully.');
+
+        // Fetch updated positions and balance after transaction
+        await fetchUserData();
+    } catch (error) {
+        console.error('Error placing order:', error);
+        throw error;
+    } finally {
+        setLoading(false);
+    }
+};
+
+
+    return { userPositions, balance, loading, placeOrder };
 };
