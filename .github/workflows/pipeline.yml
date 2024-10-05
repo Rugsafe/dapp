@@ -15,6 +15,10 @@ jobs:
     - name: list node version
       run: node -v; nvm use v20.15.1; node -v;
    
+
+    - name: list node version
+      run: nvm use v20.15.1;
+   
     - name: yarn install
       run: yarn
 
