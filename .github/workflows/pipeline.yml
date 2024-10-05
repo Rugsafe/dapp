@@ -24,18 +24,21 @@ jobs:
       run: |
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm use 20.15.1
         node -v
 
     - name: Install Yarn Dependencies
       run: |
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm use 20.15.1
         yarn install
 
     - name: Kill Tmux Session and Processes
       run: |
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm use 20.15.1
         tmux send-keys -t rugsafe-dapp C-c || true
         sleep 5
         tmux kill-session -t rugsafe-dapp || true
@@ -44,4 +47,5 @@ jobs:
       run: |
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm use 20.15.1
         tmux new -d -s rugsafe-dapp 'yarn dev'
