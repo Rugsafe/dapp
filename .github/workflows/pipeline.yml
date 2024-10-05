@@ -56,4 +56,4 @@ jobs:
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
         nvm use 20.15.1
-        tmux new -d -s rugsafe-dapp 'cd cd dist/web/ && npm run start'
+        tmux new -d -s rugsafe-dapp 'cd dist/web/ && npm run start'
