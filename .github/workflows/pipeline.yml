@@ -33,6 +33,14 @@ jobs:
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
         nvm use 20.15.1
         yarn install
+        yarn add lucide-react
+
+    - name: Build the Application
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm use 20.15.1
+        npx nx build web --production
 
     - name: Kill Tmux Session and Processes
       run: |
@@ -43,9 +51,9 @@ jobs:
         sleep 5
         tmux kill-session -t rugsafe-dapp || true
 
-    - name: Run Protocol
+    - name: Start Application in Tmux
       run: |
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
         nvm use 20.15.1
-        tmux new -d -s rugsafe-dapp 'yarn dev'
+        tmux new -d -s rugsafe-dapp 'cd cd dist/web/ && npm run start'
