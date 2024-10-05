@@ -12,15 +12,36 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: setup nvm
+    - name: Setup NVM and Install Node.js
       run: |
         export NVM_DIR="$HOME/.nvm"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-        nvm install v20.15.1
-        nvm use v20.15.1
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm install v20.15.1 
+        nvm alias default 20.15.1 
+        nvm use 20.15.1 
 
-    - name: list node version
-      run: node -v
+    - name: Verify Node Version
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        node -v
 
-    - name: yarn install
-      run: yarn
+    - name: Install Yarn Dependencies
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        yarn install
+
+    - name: Kill Tmux Session and Processes
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        tmux send-keys -t rugsafe-dapp C-c || true
+        sleep 5
+        tmux kill-session -t rugsafe-dapp || true
+
+    - name: Run Protocol
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        tmux new -d -s rugsafe-dapp 'yarn dev'
