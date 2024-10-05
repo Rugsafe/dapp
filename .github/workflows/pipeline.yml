@@ -1,0 +1,59 @@
+name: Rugsafe dApp Deployment
+
+on:
+  push:
+    branches: [ master, dev/pipeline-setup ]
+  pull_request:
+    branches: [ master, dev/pipeline-setup ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup NVM and Install Node.js
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm install v20.15.1 
+        nvm alias default 20.15.1 
+        nvm use 20.15.1 
+
+    - name: Verify Node Version
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm use 20.15.1
+        node -v
+
+    - name: Install Yarn Dependencies
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm use 20.15.1
+        yarn install
+        yarn add lucide-react
+
+    - name: Build the Application
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm use 20.15.1
+        npx nx build web --production
+
+    - name: Kill Tmux Session and Processes
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm use 20.15.1
+        tmux send-keys -t rugsafe-dapp C-c || true
+        sleep 5
+        tmux kill-session -t rugsafe-dapp || true
+
+    - name: Start Application in Tmux
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm use 20.15.1
+        tmux new -d -s rugsafe-dapp 'cd dist/web/ && npm run start'
