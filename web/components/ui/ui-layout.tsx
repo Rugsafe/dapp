@@ -149,11 +149,10 @@ export function AppHero({
         </div>
       </div>
       <div className="md:col-span-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-3xl shadow-lg p-6">
-      <h2 className="text-2xl font-bold mb-2">"Oh my vault... look at that APY!"</h2>
-<p className="text-lg">
-  In Rugsafe, V3 Vaults are enhanced with auto-compounding rewards and fortified security. Sit back, relax, and trust that your assets are safe while enjoying those secure returns.
-</p>
-
+        <h2 className="text-2xl font-bold mb-2">"Oh my vault... look at that APY!"</h2>
+        <p className="text-lg">
+        In Rugsafe, V3 Vaults are enhanced with auto-compounding rewards and fortified security. Sit back, relax, and trust that your assets are safe while enjoying those secure returns.
+        </p>
       </div>
     </div>
   );

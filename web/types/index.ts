@@ -8,7 +8,10 @@ export enum Side {
   Long,
   Short,
 }
-
+export interface OrderBookEntry {
+  price: number;
+  size: number;
+}
 export class Position {
   owner: PublicKey; // Explicitly declaring class properties
   pool: PublicKey;

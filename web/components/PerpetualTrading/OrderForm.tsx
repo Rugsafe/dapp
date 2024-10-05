@@ -1,5 +1,4 @@
 "use client"
-
 import React, { useState } from 'react';
 import { Side } from '../../types';
 
@@ -13,11 +12,11 @@ interface OrderFormProps {
 
 const OrderForm: React.FC<OrderFormProps> = ({ placeOrder, symbol, balance, maxPositions, openPositionsCount }) => {
   const [size, setSize] = useState('');
-  
+
   const handlePlaceOrder = async (side: Side) => {
     try {
       await placeOrder(side, Number(size), symbol);
-      setSize('');  // Clear the input after order
+      setSize('');
     } catch (error) {
       console.error('Failed to place order:', error);
       alert('Failed to place order. Please try again.');
@@ -25,7 +24,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ placeOrder, symbol, balance, maxP
   };
 
   return (
-    <div className="mt-auto">
+    <div className="mt-4">
       <input
         type="number"
         placeholder="Size"
@@ -33,7 +32,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ placeOrder, symbol, balance, maxP
         value={size}
         onChange={(e) => setSize(e.target.value)}
       />
-      
       <div className="flex mb-2">
         <button 
           className="flex-1 bg-green-500 py-2 px-4 rounded-l"
@@ -48,14 +46,15 @@ const OrderForm: React.FC<OrderFormProps> = ({ placeOrder, symbol, balance, maxP
           Sell / Short
         </button>
       </div>
-
-      <div className="flex justify-between text-sm mb-2">
-        <span>Available Balance</span>
-        <span>${balance.toFixed(2)}</span>
-      </div>
-      <div className="flex justify-between text-sm mb-2">
-        <span>Open Positions</span>
-        <span>{openPositionsCount} / {maxPositions}</span>
+      <div className="text-sm">
+        <div className="flex justify-between">
+          <span>Available Balance</span>
+          <span>${balance.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Open Positions</span>
+          <span>{openPositionsCount} / {maxPositions}</span>
+        </div>
       </div>
     </div>
   );
