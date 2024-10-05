@@ -12,8 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: setup nvm
+      run: export NVM_DIR=~/.nvm ; source ~/.nvm/nvm.sh
+
     - name: list node version
-      run: node -v; nvm use v20.15.1; node -v;
+      run: node -v;
    
 
     - name: list node version
