@@ -1,0 +1,29 @@
+name: Rugsafe dApp Deployment
+
+on:
+  push:
+    branches: [ master, dev/pipeline-setup ]
+  pull_request:
+    branches: [ master, dev/pipeline-setup ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: list node version
+      run: node -v
+
+    - name: yarn install
+      run: yarn
+
+    - name: Kill Tmux Session and Processes
+      run: |
+        tmux send-keys -t rugsafe-dapp C-c || true
+        sleep 5 
+        tmux kill-session -t rugsafe-dapp || true
+
+    - name: Run protocol
+      run: |
+        tmux new -d -s rugsafe-dapp 'sh -c yarn dev"'
