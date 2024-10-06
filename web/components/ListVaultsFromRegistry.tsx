@@ -39,11 +39,12 @@ const ListVaultsFromRegistry: React.FC = () => {
     const [balances, setBalances] = useState<{[key: string]: Balances}>({});
     const wallet = useWallet();
     const connection = new Connection(URL, 'confirmed');
-
+    console.log("sindie list vaults")
     useEffect(() => {
-        if (wallet.connected) {
-            listVaults();
-        }
+        // if (wallet.connected) {
+        //     listVaults();
+        // }
+        listVaults();
     }, [wallet.connected]);
 
     const listVaults = async () => {
