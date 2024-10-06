@@ -4,7 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { createVault, callFaucet, getTokenBalance } from './transaction-utils';
 
 // const URL = 'http://127.0.0.1:8899';
-const URL = 'http://api.devnet.solana.com';
+const URL = 'https://api.devnet.solana.com';
 
 
 const SPL_TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';

@@ -546,12 +546,12 @@ export const getTokenBalance = async (
     mintPublicKey: PublicKey
 ) => {
 
-    console.log("mintPublicKey: ", mintPublicKey.toBase58());
-    const userTokenAccount2 = await getAssociatedTokenAddress(
-        mintPublicKey,
-        wallet.publicKey
-    );
-    console.log("userTokenAccount2: ", userTokenAccount2.toBase58());
+    // console.log("mintPublicKey: ", mintPublicKey.toBase58());
+    // const userTokenAccount2 = await getAssociatedTokenAddress(
+    //     mintPublicKey,
+    //     wallet.publicKey
+    // );
+    // console.log("userTokenAccount2: ", userTokenAccount2.toBase58());
 
 
     const userTokenAccount = new PublicKey("8r8vqPQAjG8MvL4uEgbLsD9ZYUHLSZp4GXHbtQ9MkY6Z")
