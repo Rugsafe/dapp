@@ -32,5 +32,6 @@ export const LOCALHOST_URL = 'http://127.0.0.1:8899';
 
 // Function to get the appropriate connection URL
 export const getConnectionUrl = (useLocalhost: boolean = false): string => {
+  console.log("NETWORK_URL: ", NETWORK_URL)
   return useLocalhost ? LOCALHOST_URL : NETWORK_URL;
 };

@@ -2,9 +2,9 @@
 
 import { AppHero } from '../ui/ui-layout';
 import CreateVault from '../solana/CreateVault'; // Import the CreateVault component
-import NewListVaults from '../NewListVault';
+// import NewListVaults from '../NewListVault';
 import ListVaultsFromRegistry from '../ListVaultsFromRegistry';
-import NewVaultList from '../dummylist';
+// import NewVaultList from '../dummylist';
 
 
 
