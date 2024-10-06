@@ -4,9 +4,12 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { fetchVaultRegistry, deposit } from './solana/transaction-utils';
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID} from '@solana/spl-token';
 
-const LOCALHOST_URL = 'http://127.0.0.1:8899';
+// const URL = 'http://127.0.0.1:8899';
+const URL = 'https://api.devnet.solana.com';
+
 // const CONTRACT_PROGRAM_ID = 'AVFEXtCiwxuBHuMUsnFGoFB44ymVAbMn3QsN6f6pw5yA';
-const CONTRACT_PROGRAM_ID = 'FobNvbQsK5BAniZC2oJhXakjcPiArpsthTGDnX9eHDVY';
+// const CONTRACT_PROGRAM_ID = 'FobNvbQsK5BAniZC2oJhXakjcPiArpsthTGDnX9eHDVY';
+const CONTRACT_PROGRAM_ID = '12ixZR6s9XqSJ65RhFUwxitwXXFqV6TPfWQ37kmfLzAd';
 
 
 interface Vault {
@@ -35,7 +38,7 @@ const ListVaultsFromRegistry: React.FC = () => {
     const [vaults, setVaults] = useState<Vault[]>([]);
     const [balances, setBalances] = useState<{[key: string]: Balances}>({});
     const wallet = useWallet();
-    const connection = new Connection(LOCALHOST_URL, 'confirmed');
+    const connection = new Connection(URL, 'confirmed');
 
     useEffect(() => {
         if (wallet.connected) {

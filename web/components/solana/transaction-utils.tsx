@@ -150,7 +150,8 @@ export async function createVault(
     // const mintTokenAKeypair = Keypair.generate();
     // const mintTokenAPubkey = mintTokenAKeypair.publicKey;
     // const mintTokenAPubkey = new PublicKey("DG3jdET19heUQjp8fdL54FBvFd5oFWZZjCG8XgmFAHQJ");
-    const mintTokenAPubkey = new PublicKey("WQgfFKMeNyuANha2hsuCxgP36Qwfo2L8PGReAD1jBPp")
+    // const mintTokenAPubkey = new PublicKey("WQgfFKMeNyuANha2hsuCxgP36Qwfo2L8PGReAD1jBPp")
+    const mintTokenAPubkey = new PublicKey("AdQZgiiQ1JU8dCH9TNdeX9LYLuiZ6RW1bmQrRzZo5eqW");
 
     // Generate keypair for AToken A mint
     const mintATokenAKeypair = Keypair.generate();
@@ -216,7 +217,8 @@ export async function createVault(
         })
     );
 
-    const { blockhash } = await connection.getRecentBlockhash();
+    // const { blockhash } = await connection.getRecentBlockhash();
+    const { blockhash } = await connection.getLatestBlockhash();
     transaction.recentBlockhash = blockhash;
     transaction.feePayer = wallet.publicKey;
 
@@ -291,7 +293,8 @@ export async function deposit(
     console.log("Transaction:", transaction);
 
     try {
-        const { blockhash } = await connection.getRecentBlockhash();
+        // const { blockhash } = await connection.getRecentBlockhash();
+        const { blockhash } = await connection.getLatestBlockhash();
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = wallet.publicKey as PublicKey;
 
@@ -319,6 +322,7 @@ export async function deposit(
 export async function fetchVaultRegistry(stateAccountPubkey: PublicKey, connection: Connection) {
     try {
         // Fetch the account data from the blockchain
+        console.log(stateAccountPubkey.toBase58())
         const accountInfo = await connection.getAccountInfo(stateAccountPubkey);
 
         if (!accountInfo) {
@@ -413,7 +417,8 @@ export const callFaucet = async (
     );
 
     try {
-        const { blockhash } = await connection.getRecentBlockhash();
+        // const { blockhash } = await connection.getRecentBlockhash();
+        const { blockhash } = await connection.getLatestBlockhash();
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = wallet.publicKey;
 

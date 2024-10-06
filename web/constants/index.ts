@@ -21,7 +21,8 @@ export const PERP_CONTRACT_PROGRAM_ID: PublicKey = new PublicKey('2vS9XmBg9AemFv
 //A7Lpa8Sg8cb9ZdHG7t1TJGyy5NsvbXxgkcR6P8r4nrig
 
 // Collateral token mint
-export const COLLATERAL_MINT: PublicKey = new PublicKey('WQgfFKMeNyuANha2hsuCxgP36Qwfo2L8PGReAD1jBPp');
+// export const COLLATERAL_MINT: PublicKey = new PublicKey('WQgfFKMeNyuANha2hsuCxgP36Qwfo2L8PGReAD1jBPp');
+export const COLLATERAL_MINT: PublicKey = new PublicKey('AdQZgiiQ1JU8dCH9TNdeX9LYLuiZ6RW1bmQrRzZo5eqW')
 
 // Maximum number of positions
 export const MAX_POSITIONS: number = 10; // dont need anymore
@@ -30,6 +31,6 @@ export const MAX_POSITIONS: number = 10; // dont need anymore
 export const LOCALHOST_URL = 'http://127.0.0.1:8899';
 
 // Function to get the appropriate connection URL
-export const getConnectionUrl = (useLocalhost: boolean = true): string => {
+export const getConnectionUrl = (useLocalhost: boolean = false): string => {
   return useLocalhost ? LOCALHOST_URL : NETWORK_URL;
 };
