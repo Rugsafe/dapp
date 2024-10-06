@@ -115,32 +115,41 @@ const ListVaultsFromRegistry: React.FC = () => {
                 console.log(`Vault Account: ${vault.vaultAccount}`);
     
                 // Generate associated token account addresses dynamically
-                const userTokenAccount = await getAssociatedTokenAddress(
-                    new PublicKey(vault.mintTokenAAccount),
-                    wallet.publicKey as PublicKey
-                );
-    
-                const userATokenAccount = await getAssociatedTokenAddress(
-                    new PublicKey(vault.mintATokenAAccount),
-                    wallet.publicKey as PublicKey
-                );
-    
-                console.log("DEV: userTokenAccount:", userTokenAccount.toBase58());
-                console.log("DEV: userATokenAccount:", userATokenAccount.toBase58());
-    
-                const userTokenAccountBalance = await connection.getTokenAccountBalance(userTokenAccount);
-                const userATokenAccountBalance = await connection.getTokenAccountBalance(userATokenAccount);
-                const vaultTokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey(vault.vaultAccount));
-    
-                console.log(`userTokenAccountBalance: ${userTokenAccountBalance.value.uiAmount}`);
-                console.log(`userATokenAccountBalance: ${userATokenAccountBalance.value.uiAmount}`);
-                console.log(`vaultTokenAccountBalance: ${vaultTokenAccountBalance.value.uiAmount}`);
-    
-                newBalances[vault.vaultAccount] = {
-                    userTokenBalance: userTokenAccountBalance.value.amount,
-                    userATokenBalance: userATokenAccountBalance.value.amount,  // Now correctly typed
-                    vaultTokenBalance: vaultTokenAccountBalance.value.amount,
-                };
+                try{
+                    const userTokenAccount = await getAssociatedTokenAddress(
+                        new PublicKey(vault.mintTokenAAccount),
+                        wallet.publicKey as PublicKey
+                    );
+        
+                    const userATokenAccount = await getAssociatedTokenAddress(
+                        new PublicKey(vault.mintATokenAAccount),
+                        wallet.publicKey as PublicKey
+                    );
+        
+                    console.log("DEV: userTokenAccount:", userTokenAccount.toBase58());
+                    console.log("DEV: userATokenAccount:", userATokenAccount.toBase58());
+        
+                    const userTokenAccountBalance = await connection.getTokenAccountBalance(userTokenAccount);
+                    const userATokenAccountBalance = await connection.getTokenAccountBalance(userATokenAccount);
+                    const vaultTokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey(vault.vaultAccount));
+        
+                    console.log(`userTokenAccountBalance: ${userTokenAccountBalance.value.uiAmount}`);
+                    console.log(`userATokenAccountBalance: ${userATokenAccountBalance.value.uiAmount}`);
+                    console.log(`vaultTokenAccountBalance: ${vaultTokenAccountBalance.value.uiAmount}`);
+                    newBalances[vault.vaultAccount] = {
+                        userTokenBalance: userTokenAccountBalance.value.amount,
+                        userATokenBalance: userATokenAccountBalance.value.amount,  // Now correctly typed
+                        vaultTokenBalance: vaultTokenAccountBalance.value.amount,
+                    };
+                }catch(e){
+                    const vaultTokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey(vault.vaultAccount));
+                    newBalances[vault.vaultAccount] = {
+                        userTokenBalance: "0",
+                        userATokenBalance: "0",  // Now correctly typed
+                        vaultTokenBalance: vaultTokenAccountBalance.value.amount,
+                    };
+                }
+                
             } catch (error) {
                 console.error(`Error fetching balances for vault ${vault.vaultAccount}:`, error);
             }
