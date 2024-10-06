@@ -149,9 +149,9 @@ export function AppHero({
         </div>
       </div>
       <div className="md:col-span-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-3xl shadow-lg p-6">
-        <h2 className="text-2xl font-bold mb-2">Each vault deposits receive 1:1 Anticoins</h2>
+        <h2 className="text-2xl font-bold mb-2">Anticoin Issuance</h2>
         <p className="text-lg">
-          Anticoins enable participation in Rugsafe's suite of DeFi protocols
+          Each vault deposit mints 1:1 Anticoins in exchange for locking the rugged tokens. Anticoins enable participation in Rugsafe's suite of DeFi protocols.
         </p>
       </div>
     </div>
