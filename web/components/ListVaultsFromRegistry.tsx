@@ -5,7 +5,7 @@ import { fetchVaultRegistry, deposit } from './solana/transaction-utils';
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID} from '@solana/spl-token';
 
 // const URL = 'http://127.0.0.1:8899';
-const URL = 'https://api.devnet.solana.com';
+const URL = 'http://api.devnet.solana.com';
 
 // const CONTRACT_PROGRAM_ID = 'AVFEXtCiwxuBHuMUsnFGoFB44ymVAbMn3QsN6f6pw5yA';
 // const CONTRACT_PROGRAM_ID = 'FobNvbQsK5BAniZC2oJhXakjcPiArpsthTGDnX9eHDVY';
