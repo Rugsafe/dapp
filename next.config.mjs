@@ -1,3 +1,4 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
   distDir: 'out',
@@ -5,7 +6,6 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
-  reactStrictMode: true, // Add this line to enable React Strict Mode
 };
 
-export default nextConfig;
+export default nextConfig; 

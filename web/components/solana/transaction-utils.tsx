@@ -149,7 +149,8 @@ export async function createVault(
     // Generate keypair for Token A mint
     // const mintTokenAKeypair = Keypair.generate();
     // const mintTokenAPubkey = mintTokenAKeypair.publicKey;
-    const mintTokenAPubkey = new PublicKey("DG3jdET19heUQjp8fdL54FBvFd5oFWZZjCG8XgmFAHQJ");
+    // const mintTokenAPubkey = new PublicKey("DG3jdET19heUQjp8fdL54FBvFd5oFWZZjCG8XgmFAHQJ");
+    const mintTokenAPubkey = new PublicKey("WQgfFKMeNyuANha2hsuCxgP36Qwfo2L8PGReAD1jBPp")
 
     // Generate keypair for AToken A mint
     const mintATokenAKeypair = Keypair.generate();
@@ -189,7 +190,7 @@ export async function createVault(
 
     const [pda, _bump] = await PublicKey.findProgramAddress([Buffer.from('vault_registry')], programId);
 
-    const createVaultInstructionData = Buffer.from([0]);
+    const createVaultInstructionData = Buffer.from([0, 0]);
     // TODOD, switch out for
     // const user_token_a_account = new PublicKey("Dof5p3fEhZhXttrPeEPiKwLoac5ftRyJJnma24ZYF4qZ")
     const user_token_a_account = await getAssociatedTokenAddress(new PublicKey(mintTokenAPubkey), wallet.publicKey as PublicKey);
@@ -230,104 +231,6 @@ export async function createVault(
     return signature;
 }
 
-// export async function deposit(
-//     programId: PublicKey,
-//     mintPubkey: PublicKey,
-//     vaultPubkey: PublicKey,
-//     userTokenAPubkey: PublicKey,
-//     // userATokenAPubkey: Keypair,
-//     userATokenAPubkey: PublicKey,
-//     depositAmount: number,
-//     wallet: WalletContextState,
-//     connection: Connection
-// ) {
-
-//     const rentPubkey = new PublicKey("SysvarRent111111111111111111111111111111111");
-//     const splPubkey = TOKEN_PROGRAM_ID;
-
-//     console.log("programId", programId.toString())
-//     console.log("mintPubkey", mintPubkey.toString())
-//     console.log("vaultPubkey", vaultPubkey.toString())
-//     console.log("userTokenAPubkey", userTokenAPubkey.toString())
-//     console.log("userATokenAPubkey", userATokenAPubkey.toString())
-//     console.log("depositAmount", depositAmount)
-    
-//     // Prepare deposit instruction data
-//     // let depositInstructionData = Buffer.alloc(32);
-//     // depositInstructionData.writeUInt8(1, 0); // Instruction ID for "Deposit"
-//     // depositInstructionData.writeBigUInt64LE(BigInt(depositAmount), 1);
-
-    
-
-//     // console.log("depositInstructionData", depositInstructionData)
-//     const [stateAccountPDA, bump] = await PublicKey.findProgramAddress([Buffer.from('vault_registry')], programId);
-//     console.log("stateAccountPDA", stateAccountPDA)
-//     console.log("bump", bump)
-    
-//     // const amount = 1;
-//     // const data = Buffer.from([1, ...new Uint8Array(new BN(amount).toArray('le', 8))]);
-//     const amount = 10;
-//     const data = Buffer.from([1, ...new Uint8Array(new BN(amount).toArray('le', 8))]);
-
-
-//     const depositInstruction = new TransactionInstruction({
-//         programId,
-//         keys: [
-//             { pubkey: wallet.publicKey as PublicKey, isSigner: true, isWritable: true }, // Payer
-//             { pubkey: mintPubkey, isSigner: false, isWritable: true }, // Mint account
-//             { pubkey: vaultPubkey, isSigner: false, isWritable: true }, // Vault account
-//             { pubkey: userTokenAPubkey, isSigner: false, isWritable: true }, // User's Token account
-//             // { pubkey: userATokenAPubkey.publicKey, isSigner: false, isWritable: true }, // User's aToken account
-//             { pubkey: userATokenAPubkey, isSigner: false, isWritable: true }, // User's aToken account
-//             { pubkey: rentPubkey, isSigner: false, isWritable: true }, // Rent sysvar
-//             { pubkey: splPubkey, isSigner: false, isWritable: true }, // SPL Token Program
-//             { pubkey: SystemProgram.programId, isSigner: false, isWritable: true }, // System Program
-//             { pubkey: stateAccountPDA, isSigner: false, isWritable: true }, 
-
-//         ],
-//         // data: depositInstructionData,
-//         // data: Buffer.from([1, 100]),
-//         data,
-//     });
-
-//     console.log("depositInstruction")
-//     console.log(depositInstruction)
-
-//     const transaction = new Transaction().add(depositInstruction);
-//     console.log(transaction)
-//     try {
-//         const { blockhash } = await connection.getRecentBlockhash();
-//         transaction.recentBlockhash = blockhash;
-//         transaction.feePayer = wallet.publicKey as PublicKey;
-
-//         // Sign the transaction with wallet
-//         // const signature = await wallet.sendTransaction(transaction, connection, {
-//         //     skipPreflight: false,
-//         //     preflightCommitment: 'confirmed',
-//         // });
-
-//         const signature = await wallet.sendTransaction(
-//             transaction, 
-//             connection, 
-//             { 
-//                 skipPreflight: true, 
-//                 preflightCommitment: 'singleGossip', 
-//                 // signers: [mintKeypair, userTokenAccount]
-//                 // signers: [wallet, mintKeypair, userTokenAccount]
-//                 // signers: [userATokenAPubkey]
-//                 signers: []
-
-//             });
-
-//         // Confirm the transaction
-//         await connection.confirmTransaction(signature, 'confirmed');
-//         console.log('Transaction successful with signature:', signature);
-//         return signature;
-//     } catch (error) {
-//         console.error('Transaction failed', error);
-//         throw error;
-//     }
-// }
 
 export async function deposit(
     programId: PublicKey,
@@ -361,7 +264,7 @@ export async function deposit(
     console.log("bump", bump);
 
     // Prepare the instruction data
-    const data = Buffer.from([1, ...new Uint8Array(new BN(depositAmount).toArray('le', 8))]);
+    const data = Buffer.from([0, 1, ...new Uint8Array(new BN(depositAmount).toArray('le', 8))]);
 
     const depositInstruction = new TransactionInstruction({
         programId,
@@ -483,7 +386,8 @@ export const callFaucet = async (
     console.log("User Token Account:", userTokenAccount.toBase58());
 
     const amount = 1000;
-    const data = Buffer.from([4, ...new Uint8Array(new BN(amount).toArray('le', 8))]);
+    // const data = Buffer.from([0, 4, ...new Uint8Array(new BN(amount).toArray('le', 8))]);
+    const data = Buffer.from([0, 4, ...new Uint8Array(new BN(amount).toArray('le', 8))]);
 
     const transaction = new Transaction();
 
