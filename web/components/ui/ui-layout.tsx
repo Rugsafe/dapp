@@ -126,23 +126,23 @@ export function AppHero({
             <div>
               <input
                 type="text"
-                placeholder="Search YFI Vault"
+                placeholder="Search Rugsafe Vaults"
                 className="w-full px-4 py-2 bg-[#2a2b3e] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
             <div>
               <select className="w-full px-4 py-2 bg-[#2a2b3e] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
                 <option>Select Blockchain</option>
-                <option>Ethereum</option>
                 <option>Solana</option>
-                <option>Binance Smart Chain</option>
+                <option>Ethereum</option>
+                <option>Cosmwasm</option>
               </select>
             </div>
             <div>
               <select className="w-full px-4 py-2 bg-[#2a2b3e] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
                 <option>Select Type</option>
-                <option>Fancy</option>
-                <option>Standard</option>
+                <option>Expanded</option>
+                <option>Minimal</option>
               </select>
             </div>
           </div>
