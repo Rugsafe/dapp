@@ -4,10 +4,12 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { fetchVaultRegistry, deposit } from './solana/transaction-utils';
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID} from '@solana/spl-token';
 
-const LOCALHOST_URL = 'http://127.0.0.1:8899';
+// const URL = 'http://127.0.0.1:8899';
+const URL = 'https://api.devnet.solana.com';
+
 // const CONTRACT_PROGRAM_ID = 'AVFEXtCiwxuBHuMUsnFGoFB44ymVAbMn3QsN6f6pw5yA';
 // const CONTRACT_PROGRAM_ID = 'FobNvbQsK5BAniZC2oJhXakjcPiArpsthTGDnX9eHDVY';
-const CONTRACT_PROGRAM_ID = "3G5qWYYUBdc79hYTZqQ2TX2cvFxVgbhuSFcm7APispCw"
+const CONTRACT_PROGRAM_ID = '12ixZR6s9XqSJ65RhFUwxitwXXFqV6TPfWQ37kmfLzAd';
 
 
 interface Vault {
@@ -36,12 +38,13 @@ const ListVaultsFromRegistry: React.FC = () => {
     const [vaults, setVaults] = useState<Vault[]>([]);
     const [balances, setBalances] = useState<{[key: string]: Balances}>({});
     const wallet = useWallet();
-    const connection = new Connection(LOCALHOST_URL, 'confirmed');
-
+    const connection = new Connection(URL, 'confirmed');
+    console.log("sindie list vaults")
     useEffect(() => {
-        if (wallet.connected) {
-            listVaults();
-        }
+        // if (wallet.connected) {
+        //     listVaults();
+        // }
+        listVaults();
     }, [wallet.connected]);
 
     const listVaults = async () => {
@@ -112,32 +115,41 @@ const ListVaultsFromRegistry: React.FC = () => {
                 console.log(`Vault Account: ${vault.vaultAccount}`);
     
                 // Generate associated token account addresses dynamically
-                const userTokenAccount = await getAssociatedTokenAddress(
-                    new PublicKey(vault.mintTokenAAccount),
-                    wallet.publicKey as PublicKey
-                );
-    
-                const userATokenAccount = await getAssociatedTokenAddress(
-                    new PublicKey(vault.mintATokenAAccount),
-                    wallet.publicKey as PublicKey
-                );
-    
-                console.log("DEV: userTokenAccount:", userTokenAccount.toBase58());
-                console.log("DEV: userATokenAccount:", userATokenAccount.toBase58());
-    
-                const userTokenAccountBalance = await connection.getTokenAccountBalance(userTokenAccount);
-                const userATokenAccountBalance = await connection.getTokenAccountBalance(userATokenAccount);
-                const vaultTokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey(vault.vaultAccount));
-    
-                console.log(`userTokenAccountBalance: ${userTokenAccountBalance.value.uiAmount}`);
-                console.log(`userATokenAccountBalance: ${userATokenAccountBalance.value.uiAmount}`);
-                console.log(`vaultTokenAccountBalance: ${vaultTokenAccountBalance.value.uiAmount}`);
-    
-                newBalances[vault.vaultAccount] = {
-                    userTokenBalance: userTokenAccountBalance.value.amount,
-                    userATokenBalance: userATokenAccountBalance.value.amount,  // Now correctly typed
-                    vaultTokenBalance: vaultTokenAccountBalance.value.amount,
-                };
+                try{
+                    const userTokenAccount = await getAssociatedTokenAddress(
+                        new PublicKey(vault.mintTokenAAccount),
+                        wallet.publicKey as PublicKey
+                    );
+        
+                    const userATokenAccount = await getAssociatedTokenAddress(
+                        new PublicKey(vault.mintATokenAAccount),
+                        wallet.publicKey as PublicKey
+                    );
+        
+                    console.log("DEV: userTokenAccount:", userTokenAccount.toBase58());
+                    console.log("DEV: userATokenAccount:", userATokenAccount.toBase58());
+        
+                    const userTokenAccountBalance = await connection.getTokenAccountBalance(userTokenAccount);
+                    const userATokenAccountBalance = await connection.getTokenAccountBalance(userATokenAccount);
+                    const vaultTokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey(vault.vaultAccount));
+        
+                    console.log(`userTokenAccountBalance: ${userTokenAccountBalance.value.uiAmount}`);
+                    console.log(`userATokenAccountBalance: ${userATokenAccountBalance.value.uiAmount}`);
+                    console.log(`vaultTokenAccountBalance: ${vaultTokenAccountBalance.value.uiAmount}`);
+                    newBalances[vault.vaultAccount] = {
+                        userTokenBalance: userTokenAccountBalance.value.amount,
+                        userATokenBalance: userATokenAccountBalance.value.amount,  // Now correctly typed
+                        vaultTokenBalance: vaultTokenAccountBalance.value.amount,
+                    };
+                }catch(e){
+                    const vaultTokenAccountBalance = await connection.getTokenAccountBalance(new PublicKey(vault.vaultAccount));
+                    newBalances[vault.vaultAccount] = {
+                        userTokenBalance: "0",
+                        userATokenBalance: "0",  // Now correctly typed
+                        vaultTokenBalance: vaultTokenAccountBalance.value.amount,
+                    };
+                }
+                
             } catch (error) {
                 console.error(`Error fetching balances for vault ${vault.vaultAccount}:`, error);
             }

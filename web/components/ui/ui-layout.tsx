@@ -126,32 +126,32 @@ export function AppHero({
             <div>
               <input
                 type="text"
-                placeholder="Search YFI Vault"
+                placeholder="Search Rugsafe Vaults"
                 className="w-full px-4 py-2 bg-[#2a2b3e] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
             <div>
               <select className="w-full px-4 py-2 bg-[#2a2b3e] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
                 <option>Select Blockchain</option>
-                <option>Ethereum</option>
                 <option>Solana</option>
-                <option>Binance Smart Chain</option>
+                <option>Ethereum</option>
+                <option>Cosmwasm</option>
               </select>
             </div>
             <div>
               <select className="w-full px-4 py-2 bg-[#2a2b3e] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
                 <option>Select Type</option>
-                <option>Fancy</option>
-                <option>Standard</option>
+                <option>Expanded</option>
+                <option>Minimal</option>
               </select>
             </div>
           </div>
         </div>
       </div>
       <div className="md:col-span-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-3xl shadow-lg p-6">
-        <h2 className="text-2xl font-bold mb-2">"Oh my vault... look at that APY!"</h2>
+        <h2 className="text-2xl font-bold mb-2">Anticoin Issuance</h2>
         <p className="text-lg">
-        In Rugsafe, V3 Vaults are enhanced with auto-compounding rewards and fortified security. Sit back, relax, and trust that your assets are safe while enjoying those secure returns.
+          Each vault deposit mints 1:1 Anticoins in exchange for locking the rugged tokens. Anticoins enable participation in Rugsafe's suite of DeFi protocols.
         </p>
       </div>
     </div>

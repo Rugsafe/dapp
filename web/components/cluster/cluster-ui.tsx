@@ -33,6 +33,7 @@ export function ExplorerLink({
 export function ClusterChecker({ children }: { children: ReactNode }) {
   const { cluster } = useCluster();
   const { connection } = useConnection();
+  console.log("connection.rpcEndpoint:", connection.rpcEndpoint)
 
   const query = useQuery({
     queryKey: ['version', { cluster, endpoint: connection.rpcEndpoint }],

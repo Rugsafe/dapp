@@ -3,12 +3,15 @@ import { PublicKey, Keypair, Connection } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { createVault, callFaucet, getTokenBalance } from './transaction-utils';
 
-const LOCALHOST_URL = 'http://127.0.0.1:8899';
+// const URL = 'http://127.0.0.1:8899';
+const URL = 'https://api.devnet.solana.com';
+
 
 const SPL_TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 // const CONTRACT_PROGRAM_ID = 'AVFEXtCiwxuBHuMUsnFGoFB44ymVAbMn3QsN6f6pw5yA';
 // const CONTRACT_PROGRAM_ID = 'FobNvbQsK5BAniZC2oJhXakjcPiArpsthTGDnX9eHDVY';
-const CONTRACT_PROGRAM_ID = "3G5qWYYUBdc79hYTZqQ2TX2cvFxVgbhuSFcm7APispCw"
+// const CONTRACT_PROGRAM_ID = "3G5qWYYUBdc79hYTZqQ2TX2cvFxVgbhuSFcm7APispCw"
+const CONTRACT_PROGRAM_ID = "12ixZR6s9XqSJ65RhFUwxitwXXFqV6TPfWQ37kmfLzAd"
 
 // const CONTRACT_PROGRAM_ID = '7kaX5wHo7iyG99uG91aAxnFgi55ZBhSZuGaxp8x3qqDv'
 const CreateVault = () => {
@@ -17,7 +20,7 @@ const CreateVault = () => {
     const [balance, setBalance] = useState("-");
 
     const wallet = useWallet();
-    const connection = new Connection(LOCALHOST_URL, 'confirmed');
+    const connection = new Connection(URL, 'confirmed');
 
     const programId = new PublicKey(CONTRACT_PROGRAM_ID);
 
@@ -28,6 +31,7 @@ const CreateVault = () => {
             // const newMintKeypair = new PublicKey("3JR13Th4Lp7Y6nBhj2LP1mMciQG4ZJoT3t9rF2D5xjNq");
             // const newMintKeypair = new PublicKey("DG3jdET19heUQjp8fdL54FBvFd5oFWZZjCG8XgmFAHQJ");
             const newMintKeypair = new PublicKey("BxLfds7shG7mMaM8pM3AySJJBsvcWo4yvWRvcky4uRzB");
+            // const newMintKeypair = new PublicKey("AdQZgiiQ1JU8dCH9TNdeX9LYLuiZ6RW1bmQrRzZo5eqW")
             setMintPubkey(newMintKeypair);
             console.log('Generated new mint public key:', newMintKeypair.toBase58());
         }
