@@ -254,34 +254,12 @@ const Swap: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold text-center text-white mb-8">Liquidity Pools</h1>
+        <h1 className="text-3xl font-bold text-center text-white mb-8">🚀</h1>
         
-        {isLoading ? (
-          <p className="text-white">Loading pools...</p>
-        ) : error ? (
-          <p className="text-red-500">{error}</p>
-        ) : (
-          <div className="space-y-4">
-            {pools.length === 0 ? (
-              <p className="text-white">No pools available.</p>
-            ) : (
-              pools.map((pool) => (
-                <div key={pool.publicKey.toString()} className="bg-purple-800 bg-opacity-50 rounded-lg p-4">
-                  <p className="text-white">Pool Address: {pool.publicKey.toString()}</p>
-                  <p className="text-white">Token 0: {pool.tokenMint0.toString()}</p>
-                  <p className="text-white">Token 1: {pool.tokenMint1.toString()}</p>
-                  <p className="text-white">Liquidity: {pool.liquidity}</p>
-                  <p className="text-white">Current Tick: {pool.tickCurrent}</p>
-                  <p className="text-white">Sqrt Price: {pool.sqrtPriceX64}</p>
-                </div>
-              ))
-            )}
-          </div>
-        )}
   
-        <p className="text-center text-purple-200 text-sm">
+        {/* <p className="text-center text-purple-200 text-sm">
           RugSafe: Where your assets thrive, not just survive          
-        </p>
+        </p> */}
       </motion.div>
     </div>
   );
@@ -299,7 +277,7 @@ const Swap: React.FC = () => {
           className={`px-4 py-2 rounded-full text-white font-bold transition-all duration-300 ${activeTab === 'liquidity' ? 'bg-purple-500' : ''}`}
           onClick={() => setActiveTab('liquidity')}
         >
-          Liquidity
+          Coming Soon
         </button>
       </div>
 

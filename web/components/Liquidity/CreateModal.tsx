@@ -29,8 +29,7 @@ function CreateModal({ isOpen, onClose, handleCreateAmmConfig, handleCreatePool 
             <div className="bg-[#252732] p-4 rounded-lg border border-[#3f3f5a]">
               <h3 className="text-white font-semibold mb-2">Create pool</h3>
               <p className="text-gray-400 text-sm mb-2">
-                Select pool type to create a pool for any token pair.
-                Read the guide for CLMM or Standard pools.
+                Select pool type to create a pool for any pair that includes an Anticoin. Read the docs for more details on concentrated liquidity.
               </p>
               <div className="flex space-x-2">
                 <button 
@@ -66,12 +65,12 @@ function CreateModal({ isOpen, onClose, handleCreateAmmConfig, handleCreatePool 
               Burn & Earn (CLMM)
             </button> */}
 
-            <button 
+            {/* <button 
                 onClick={handleCreateAmmConfig}
                 className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-2 rounded-lg"
               >
               Create AMM Config
-            </button>
+            </button> */}
           </div>
           
           <div className="mt-6">
