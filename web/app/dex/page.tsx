@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { 
@@ -19,8 +19,28 @@ import {
   TOKEN_PROGRAM_ID, 
 } from '@solana/spl-token';
 import { sha256 } from 'js-sha256';
+import bs58 from 'bs58';
 
+import * as anchor from "@project-serum/anchor";
+import { Program, AnchorProvider } from "@project-serum/anchor";
+// import idl from "./idl.json"; // Import your program's IDL file
 
+interface PoolInfo {
+  publicKey: PublicKey;
+  tokenMint0: PublicKey;
+  tokenMint1: PublicKey;
+  tokenVault0: PublicKey;
+  tokenVault1: PublicKey;
+  observationKey: PublicKey;
+  mintDecimals0: number;
+  mintDecimals1: number;
+  tickSpacing: number;
+  liquidity: bigint;
+  sqrtPriceX64: bigint;
+  tickCurrent: number;
+  feeGrowthGlobal0X64: bigint;
+  feeGrowthGlobal1X64: bigint;
+}
 
 const tokens: Token[] = [
   { symbol: 'ZRX', name: '0x Protocol Token', icon: '0x-icon-url' },
@@ -36,9 +56,6 @@ const tokens: Token[] = [
   { symbol: 'NOVA', name: 'Supernova', icon: '💥' },
 ];
 
-import * as anchor from "@project-serum/anchor";
-import { Program, AnchorProvider } from "@project-serum/anchor";
-// import idl from "./idl.json"; // Import your program's IDL file
 
 
 const createAmmConfig = async (
@@ -221,6 +238,7 @@ const createPool = async (
   return signature;
 };
 
+
 const Swap: React.FC = () => {
   const { publicKey, sendTransaction } = useWallet(); // using the wallet adapter hook
   // const connection = new Connection("https://api.devnet.solana.com"); // should be local
@@ -234,6 +252,11 @@ const Swap: React.FC = () => {
   const wallet = useWallet();
 
   const [activeTab, setActiveTab] = useState<'swap' | 'liquidity'>('swap');
+  
+  //pools
+  const [pools, setPools] = useState<PoolInfo[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
 
   const handleSwap = () => {
@@ -271,6 +294,172 @@ const Swap: React.FC = () => {
     setShowModal(false);
   };
 
+  // const fetchPools = async (connection: Connection): Promise<PoolInfo[]> => {
+  //   const programId = new PublicKey("E4jqaxpY8zonsVHhuYVFoCMDvgsL411cYCK9d8tGCBYC");
+  
+  //   try {
+  //     const accounts = await connection.getProgramAccounts(programId, {
+  //       filters: [
+  //         {
+  //           memcmp: {
+  //             offset: 0,
+  //             bytes: bs58.encode(Buffer.from([0x0b, 0x33, 0x18, 0xda, 0x3b, 0x34, 0x85, 0xc9])), // First 8 bytes of SHA256("global:pool")
+  //           },
+  //         },
+  //       ],
+  //     });
+  
+  //     console.log(`Found ${accounts.length} accounts`);
+  
+  //     const pools: PoolInfo[] = accounts.map(({ pubkey, account }) => {
+  //       const data = account.data;
+  //       let offset = 8; // Skip the 8-byte discriminator
+  
+  //       const tokenMint0 = new PublicKey(data.slice(offset, offset + 32));
+  //       offset += 32;
+  //       const tokenMint1 = new PublicKey(data.slice(offset, offset + 32));
+  //       offset += 32;
+  //       const tokenVault0 = new PublicKey(data.slice(offset, offset + 32));
+  //       offset += 32;
+  //       const tokenVault1 = new PublicKey(data.slice(offset, offset + 32));
+  //       offset += 32;
+  //       const observationKey = new PublicKey(data.slice(offset, offset + 32));
+  //       offset += 32;
+  
+  //       const mintDecimals0 = data[offset];
+  //       offset += 1;
+  //       const mintDecimals1 = data[offset];
+  //       offset += 1;
+  //       const tickSpacing = data.readUInt16LE(offset);
+  //       offset += 2;
+  
+  //       const liquidity = data.readBigUInt64LE(offset);
+  //       offset += 8;
+  //       const sqrtPriceX64 = data.readBigUInt64LE(offset);
+  //       offset += 8;
+  //       const tickCurrent = data.readInt32LE(offset);
+  //       offset += 4;
+  
+  //       // Skip padding
+  //       offset += 4;
+  
+  //       const feeGrowthGlobal0X64 = data.readBigUInt64LE(offset);
+  //       offset += 8;
+  //       const feeGrowthGlobal1X64 = data.readBigUInt64LE(offset);
+  
+  //       return {
+  //         publicKey: pubkey,
+  //         tokenMint0,
+  //         tokenMint1,
+  //         tokenVault0,
+  //         tokenVault1,
+  //         observationKey,
+  //         mintDecimals0,
+  //         mintDecimals1,
+  //         tickSpacing,
+  //         liquidity,
+  //         sqrtPriceX64,
+  //         tickCurrent,
+  //         feeGrowthGlobal0X64,
+  //         feeGrowthGlobal1X64,
+  //       };
+  //     });
+  
+  //     console.log(`Processed ${pools.length} pools`);
+  //     return pools;
+  //   } catch (err) {
+  //     console.error("Error fetching pools:", err);
+  //     throw err;
+  //   }
+  // };
+
+  const fetchPools = async (connection: Connection): Promise<PoolInfo[]> => {
+    const programId = new PublicKey("E4jqaxpY8zonsVHhuYVFoCMDvgsL411cYCK9d8tGCBYC");
+  
+    try {
+      const accounts = await connection.getProgramAccounts(programId, {
+        filters: [
+          {
+            memcmp: {
+              offset: 0,
+              bytes: bs58.encode(Buffer.from([0x0b, 0x33, 0x18, 0xda, 0x3b, 0x34, 0x85, 0xc9])), // First 8 bytes of SHA256("global:pool")
+            },
+          },
+        ],
+      });
+  
+      console.log(`Found ${accounts.length} accounts`);
+  
+      const pools: PoolInfo[] = accounts.map(({ pubkey, account }) => {
+        const data = account.data;
+        let offset = 8; // Skip the 8-byte discriminator
+        console.log(data)
+        const tokenMint0 = new PublicKey(data.slice(offset, offset + 32));
+        offset += 32;
+        const tokenMint1 = new PublicKey(data.slice(offset, offset + 32));
+        offset += 32;
+        const tokenVault0 = new PublicKey(data.slice(offset, offset + 32));
+        offset += 32;
+        const tokenVault1 = new PublicKey(data.slice(offset, offset + 32));
+        offset += 32;
+        const observationKey = new PublicKey(data.slice(offset, offset + 32));
+        offset += 32;
+  
+        const mintDecimals0 = data[offset];
+        offset += 1;
+        const mintDecimals1 = data[offset];
+        offset += 1;
+        const tickSpacing = data.readUInt16LE(offset);
+        offset += 2;
+  
+        const liquidity = data.readBigUInt64LE(offset);
+        offset += 8;
+        const sqrtPriceX64 = data.readBigUInt64LE(offset);
+        offset += 8;
+        const tickCurrent = data.readInt32LE(offset);
+        offset += 4;
+  
+        // Skip padding
+        offset += 4;
+  
+        const feeGrowthGlobal0X64 = data.readBigUInt64LE(offset);
+        offset += 8;
+        const feeGrowthGlobal1X64 = data.readBigUInt64LE(offset);
+  
+        return {
+          publicKey: pubkey,
+          tokenMint0,
+          tokenMint1,
+          tokenVault0,
+          tokenVault1,
+          observationKey,
+          mintDecimals0,
+          mintDecimals1,
+          tickSpacing,
+          liquidity,
+          sqrtPriceX64,
+          tickCurrent,
+          feeGrowthGlobal0X64,
+          feeGrowthGlobal1X64,
+        };
+      });
+  
+      console.log(`Processed ${pools.length} pools`);
+      return pools;
+    } catch (err) {
+      console.error("Error fetching pools:", err);
+      throw err;
+    }
+  };
+  
+  useEffect(() => {
+    fetchPools(connection); // Executes fetchPools on mount only
+  }, [fetchPools]);
+  
+  const handleRefresh = () => {
+    fetchPools(connection); // Allows manual refresh by the user
+  };
+  
   const handleCreateAmmConfig = async () => {
     if (!publicKey) {
       console.error("Wallet not connected");
@@ -314,8 +503,8 @@ const Swap: React.FC = () => {
     const programId = new PublicKey("E4jqaxpY8zonsVHhuYVFoCMDvgsL411cYCK9d8tGCBYC");
    
     //switched due to constraint in solana-clmm/programs/amm/src/instructions/create_pool.rs
-    const tokenMint1 = new PublicKey("CVkKkhw7zxSwxLhFkbS6E8Fi5urzyvirb9DDZEJHmQE6");
-    const tokenMint0 = new PublicKey("445iUPxTPV51DiBGAPdr13Xa4UpUzquurq7NfGFZRSKz");
+    const tokenMint0 = new PublicKey("9N5y4Vppq6H2wmhZG3LtUgQCwCYbiC4RYUiTfge76D8p");
+    const tokenMint1 = new PublicKey("Cp7N9j6wwJ4hL3kp12zifWXnS54vUv8j9qD8mNJ1C3sp");
 
     
     const configIndex = 0; // Use the appropriate index
@@ -420,40 +609,59 @@ const Swap: React.FC = () => {
   );
 
   const renderLiquidityContent = () => (
-    <div className="w-full max-w-md bg-black bg-opacity-20 backdrop-blur-lg border border-purple-500 rounded-3xl overflow-hidden">
+    <div className="w-full max-w-md">
       <motion.div 
         className="p-6 space-y-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold text-center text-white mb-8">Add Liquidity</h1>
+        <h1 className="text-3xl font-bold text-center text-white mb-8">Liquidity Pools</h1>
         
-        <div className="space-y-4">
-          <p className="text-white">liquidity pools</p>
-        </div>
-
+        {isLoading ? (
+          <p className="text-white">Loading pools...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <div className="space-y-4">
+            {pools.length === 0 ? (
+              <p className="text-white">No pools available.</p>
+            ) : (
+              pools.map((pool) => (
+                <div key={pool.publicKey.toString()} className="bg-purple-800 bg-opacity-50 rounded-lg p-4">
+                  <p className="text-white">Pool Address: {pool.publicKey.toString()}</p>
+                  <p className="text-white">Token 0: {pool.tokenMint0.toString()}</p>
+                  <p className="text-white">Token 1: {pool.tokenMint1.toString()}</p>
+                  <p className="text-white">Liquidity: {pool.liquidity}</p>
+                  <p className="text-white">Current Tick: {pool.tickCurrent}</p>
+                  <p className="text-white">Sqrt Price: {pool.sqrtPriceX64}</p>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+  
         <button 
           className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 rounded-full transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
         >
           Add Liquidity
         </button>
-
+  
         <div className="mt-4 space-y-4 w-full max-w-md">
-        <button 
-          onClick={handleCreateAmmConfig}
-          className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-3 rounded-lg"
-        >
-          Create AMM Config
-        </button>
-        <button 
-          onClick={handleCreatePool}
-          className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white font-bold py-3 rounded-lg"
-        >
-          Create Pool
-        </button>
-      </div>
-
+          <button 
+            onClick={handleCreateAmmConfig}
+            className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-3 rounded-lg"
+          >
+            Create AMM Config
+          </button>
+          <button 
+            onClick={handleCreatePool}
+            className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white font-bold py-3 rounded-lg"
+          >
+            Create Pool
+          </button>
+        </div>
+  
         <p className="text-center text-purple-200 text-sm">
           RugSafe: Where your assets thrive, not just survive          
         </p>
