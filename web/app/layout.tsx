@@ -17,13 +17,11 @@ const links: { label: string; path: string; dropdown?: { label: string; path: st
     path: '/trade',
     dropdown: [
       { label: 'Swap', path: '/dex' },
-      { label: 'Perps', path: '/perps' },
+      { label: 'Perpetuals', path: '/perps' },
       { label: 'Liquidity', path: '/liquidity' }, // Example route
     ],
   },
   { label: 'Vaults', path: '/vaults' },
-  {label: 'Swap', path: '/dex'},
-  {label: 'Perpetuals', path: '/perps'},
 
   // { label: 'Clusters', path: '/clusters' },
 ];

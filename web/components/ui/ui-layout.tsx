@@ -120,12 +120,12 @@ export function AppHero({
   subtitle: React.ReactNode;
 }) {
   const data = [
-    { name: 'Jan', value: 10 },
-    { name: 'Feb', value: 34 },
-    { name: 'Mar', value: 89 },
-    { name: 'Apr', value: 199 },
-    { name: 'May', value: 149 },
-    { name: 'Jun', value: 246 },
+    { name: 'May', value: 1 },
+    { name: 'Jun', value: 1 },
+    { name: 'Jul', value: 1 },
+    { name: 'Aug', value: 1 },
+    { name: 'Sept', value: 5 },
+    { name: 'Oct', value: 9 },
   ];
 
   return (
@@ -135,7 +135,7 @@ export function AppHero({
         <p className="text-xl">{subtitle}</p>
       </div>
       <div className="md:col-span-1 bg-[#1a1b2e] rounded-3xl shadow-lg p-6">
-        <h2 className="text-3xl font-bold mb-2">$1,456</h2>
+        <h2 className="text-3xl font-bold mb-2">$0</h2>
         <p className="text-gray-300 mb-4">Total Value Locked</p>
         <div className="h-40">
           <ResponsiveContainer width="100%" height="100%">
