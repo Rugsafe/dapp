@@ -150,3 +150,19 @@ export interface TokenModalProps {
   tokens: Token[];
   onSelect: (token: Token) => void;
 }
+
+
+// liquidity types interfaces 
+
+export interface StatsProps {
+  tvl: string
+  volume: string
+}
+
+export interface PoolItemProps {
+  name: string
+  liquidity: string
+  volume: string
+  fees: string
+  apr: string
+}
