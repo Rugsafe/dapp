@@ -2,9 +2,9 @@ name: Rugsafe dApp Deployment
 
 on:
   push:
-    branches: [ master, dev/pipeline-setup ]
+    branches: [ master ]
   pull_request:
-    branches: [ master, dev/pipeline-setup ]
+    branches: [ master ]
 
 jobs:
   deploy:

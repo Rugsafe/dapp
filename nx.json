@@ -25,6 +25,13 @@
       ]
     }
   },
+  "export": {
+      "executor": "@nx/next:export",
+      "options": {
+        "buildTarget": "web:build", 
+        "outputPath": "dist/apps/web-out" 
+      }
+    },
   "generators": {
     "@nx/next": {
       "application": {

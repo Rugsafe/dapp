@@ -10,32 +10,40 @@ import { AccountChecker } from '../account/account-ui';
 import { ClusterChecker, ClusterUiSelect, ExplorerLink } from '../cluster/cluster-ui';
 import toast, { Toaster } from 'react-hot-toast';
 import CreateVault from '../solana/CreateVault';
+import { Dropdown } from '../Dropdown';
 
 export function UiLayout({
   children,
   links,
 }: {
   children: ReactNode;
-  links: { label: string; path: string }[];
+  links: { label: string; path: string; dropdown?: { label: string; path: string }[] }[];
 }) {
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   return (
     <div className="h-full w-full flex flex-col bg-[#0a0b1e] text-white">
-      <div className="navbar bg-base-300 text-neutral-content flex-col md:flex-row space-y-2 md:space-y-0 w-full">
+      <div className="navbar bg-base-300 text-neutral-content">
         <div className="flex-1">
           <Link className="btn btn-ghost normal-case text-xl" href="/">
-            <img className="h-8 md:h-8" alt="Logo" src="assets/img/rugsafe.png" />
+            <img className="h-8" alt="Logo" src="assets/img/rugsafe.png" />
           </Link>
+        </div>
+        <div className="flex-none hidden md:block">
           <ul className="menu menu-horizontal px-1 space-x-2">
-            {links.map(({ label, path }) => (
-              <li key={path}>
-                <Link
-                  className={pathname.startsWith(path) ? 'active' : ''}
-                  href={path}
-                >
-                  {label}
-                </Link>
+            {links.map((link, index) => (
+              <li key={index}>
+                {link.dropdown ? (
+                  <Dropdown label={link.label} links={link.dropdown} />
+                ) : (
+                  <Link
+                    className={pathname.startsWith(link.path) ? 'active' : ''}
+                    href={link.path}
+                  >
+                    {link.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
@@ -43,8 +51,39 @@ export function UiLayout({
         <div className="flex-none space-x-2">
           <WalletButton />
           <ClusterUiSelect />
+          <button
+            className="btn btn-square btn-ghost md:hidden"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-5 h-5 stroke-current">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
         </div>
       </div>
+
+      {/* Mobile menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-base-300 p-4">
+          <ul className="menu w-full">
+            {links.map((link, index) => (
+              <li key={index}>
+                {link.dropdown ? (
+                  <Dropdown label={link.label} links={link.dropdown} />
+                ) : (
+                  <Link
+                    className={pathname.startsWith(link.path) ? 'active' : ''}
+                    href={link.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <ClusterChecker>
         <AccountChecker />
@@ -71,9 +110,6 @@ export function UiLayout({
     </div>
   );
 }
-
-
-
 export function AppHero({
   children,
   title,
@@ -84,12 +120,12 @@ export function AppHero({
   subtitle: React.ReactNode;
 }) {
   const data = [
-    { name: 'Jan', value: 10 },
-    { name: 'Feb', value: 34 },
-    { name: 'Mar', value: 89 },
-    { name: 'Apr', value: 199 },
-    { name: 'May', value: 149 },
-    { name: 'Jun', value: 246 },
+    { name: 'May', value: 1 },
+    { name: 'Jun', value: 1 },
+    { name: 'Jul', value: 1 },
+    { name: 'Aug', value: 1 },
+    { name: 'Sept', value: 5 },
+    { name: 'Oct', value: 9 },
   ];
 
   return (
@@ -99,7 +135,7 @@ export function AppHero({
         <p className="text-xl">{subtitle}</p>
       </div>
       <div className="md:col-span-1 bg-[#1a1b2e] rounded-3xl shadow-lg p-6">
-        <h2 className="text-3xl font-bold mb-2">$1,456</h2>
+        <h2 className="text-3xl font-bold mb-2">$0</h2>
         <p className="text-gray-300 mb-4">Total Value Locked</p>
         <div className="h-40">
           <ResponsiveContainer width="100%" height="100%">

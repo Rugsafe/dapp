@@ -120,3 +120,49 @@ export class UserPositions {
         }]
       ]);
 }
+
+
+
+
+/// Types for Swap -> Token, TokenSelectorProps, SwapButtonPropos, TokenModalProps
+
+export interface Token {
+  symbol: string;
+  name: string;
+  icon: string;
+}
+
+export interface TokenSelectorProps {
+  token: Token;
+  onClick: () => void;
+  amount: string;
+  onAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  isInput: boolean;
+}
+
+export interface SwapButtonProps {
+  onClick: () => void;
+}
+
+export interface TokenModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  tokens: Token[];
+  onSelect: (token: Token) => void;
+}
+
+
+// liquidity types interfaces 
+
+export interface StatsProps {
+  tvl: string
+  volume: string
+}
+
+export interface PoolItemProps {
+  name: string
+  liquidity: string
+  volume: string
+  fees: string
+  apr: string
+}
