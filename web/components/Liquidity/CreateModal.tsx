@@ -6,9 +6,11 @@ import { X } from 'lucide-react'
 interface CreateModalProps {
   isOpen: boolean
   onClose: () => void
+  handleCreateAmmConfig: () => void
+  handleCreatePool: () => void
 }
 
-function CreateModal({ isOpen, onClose }: CreateModalProps) {
+function CreateModal({ isOpen, onClose, handleCreateAmmConfig, handleCreatePool }: CreateModalProps) {
     const [selectedOption, setSelectedOption] = useState<string | null>(null)
 
     if (!isOpen) return null
@@ -56,17 +58,48 @@ function CreateModal({ isOpen, onClose }: CreateModalProps) {
               </div>
             </div>
             
-            <button className="w-full bg-[#2d2d3d] text-white p-2 rounded-lg hover:bg-[#3a3a4f]">
+            {/* <button className="w-full bg-[#2d2d3d] text-white p-2 rounded-lg hover:bg-[#3a3a4f]">
               Create Farm
-            </button>
+            </button> */}
             
-            <button className="w-full bg-[#2d2d3d] text-white p-2 rounded-lg hover:bg-[#3a3a4f]">
+            {/* <button className="w-full bg-[#2d2d3d] text-white p-2 rounded-lg hover:bg-[#3a3a4f]">
               Burn & Earn (CLMM)
+            </button> */}
+
+            <button 
+                onClick={handleCreateAmmConfig}
+                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-2 rounded-lg"
+              >
+              Create AMM Config
             </button>
           </div>
           
           <div className="mt-6">
-            <button className="w-full bg-[#7b61ff] text-white p-2 rounded-lg hover:bg-[#6a52e5]">
+
+            {/*  */}
+            {/* <button 
+              className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-3 rounded-full transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
+            >
+              Add Liquidity
+            </button> */}
+      
+            {/* <div className="mt-4 space-y-4 w-full max-w-md"> */}
+              {/* <button 
+                onClick={handleCreateAmmConfig}
+                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-2 rounded-lg"
+              >
+                Create AMM Config
+              </button> */}
+              {/* <button 
+                onClick={handleCreatePool}
+                className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white font-bold py-3 rounded-lg"
+              >
+                Create Pool
+              </button> */}
+            {/* </div> */}
+            {/*  */}
+
+            <button onClick={handleCreatePool} className="w-full bg-[#7b61ff] text-white p-2 rounded-lg hover:bg-[#6a52e5]">
               Continue
             </button>
             <button onClick={onClose} className="w-full text-gray-400 p-2 mt-2 hover:text-white">

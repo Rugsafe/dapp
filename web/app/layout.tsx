@@ -12,6 +12,7 @@ export const metadata = {
 
 const links: { label: string; path: string; dropdown?: { label: string; path: string }[] }[] = [
   // { label: 'Account', path: '/account' },
+  { label: 'Vaults', path: '/vaults' },
   { 
     label: 'Trade', 
     path: '/trade',
@@ -20,9 +21,7 @@ const links: { label: string; path: string; dropdown?: { label: string; path: st
       { label: 'Perpetuals', path: '/perps' },
       { label: 'Liquidity', path: '/liquidity' }, // Example route
     ],
-  },
-  { label: 'Vaults', path: '/vaults' },
-
+  }
   // { label: 'Clusters', path: '/clusters' },
 ];
 
