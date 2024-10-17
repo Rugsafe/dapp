@@ -8,7 +8,7 @@ const Header: React.FC = () => {
       <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
         Liquidity Pools
       </h1>
-      <p className="text-purple-300 text-sm">Provide liquidity, earn yield.</p>
+      <p className="text-purple-300 text-sm">Provide liquidity for Anticoin pairs.</p>
     </div>
   )
 }
