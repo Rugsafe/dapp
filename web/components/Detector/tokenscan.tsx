@@ -34,6 +34,14 @@ const TokenScannerInterface: React.FC<TokenScannerInterfaceProps> = ({
   passedCount,
   tokenOverview,
 }) => {
+
+  const truncateAddress = (address: string) => {
+    if (address.length > 12) {
+      return `${address.slice(0, 6)}...${address.slice(-4)}`;
+    }
+    return address;
+  };
+
   return (
     <div className="bg-gray-900 text-white p-6 font-sans">
       <div className="flex justify-between items-center mb-6">
@@ -137,17 +145,19 @@ const TokenScannerInterface: React.FC<TokenScannerInterfaceProps> = ({
             <table className="w-full">
               <tbody>
                 {tokenOverview.map((item, index) => (
-                  <tr key={index} className="border-t border-gray-700">
-                    <td className="py-2 text-gray-400">{item.label}</td>
-                    <td className="py-2 text-right flex items-center justify-end">
-                      <span className={item.label === 'Token Type' ? 'bg-gray-700 px-2 py-1 rounded text-xs' : ''}>
-                        {item.value}
-                      </span>
-                      {item.copyable && <Copy className="ml-2 text-gray-400" size={16} />}
-                      {item.link && <ExternalLink className="ml-2 text-gray-400" size={16} />}
-                    </td>
-                  </tr>
-                ))}
+              <tr key={index} className="border-t border-gray-700">
+                <td className="py-2 text-gray-400">{item.label}</td>
+                <td className="py-2 text-right flex items-center justify-end">
+                  <span className={item.label === 'Token Type' ? 'bg-gray-700 px-2 py-1 rounded text-xs' : ''}>
+                    {item.label.toLowerCase().includes('address') ? truncateAddress(item.value) : item.value}
+                  </span>
+                  {item.copyable && (
+                    <Copy className="ml-2 text-gray-400 cursor-pointer" size={16} onClick={() => navigator.clipboard.writeText(item.value)} />
+                  )}
+                  {item.link && <ExternalLink className="ml-2 text-gray-400 cursor-pointer" size={16} />}
+                </td>
+              </tr>
+            ))}
               </tbody>
             </table>
           </div>

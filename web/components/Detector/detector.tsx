@@ -19,21 +19,20 @@ interface Chain {
 }
 
 const tokens: Token[] = [
-  { name: "flocka", logo: "🔷", score: 5, address: "9n8b1EXLCA8Z22mf7pjLKVNzuQgGbyPfLrmFQvEcHeSU", attentions: 2, alerts: 0 },
+  { name: "FLOCKA", logo: "🔷", score: 5, address: "9n8b1EXLCA8Z22mf7pjLKVNzuQgGbyPfLrmFQvEcHeSU", attentions: 2, alerts: 0 },
   { name: "JASON", logo: "🟠", score: 5, address: "6SUryVEuDz5hqAxab6QrGfbzWvjN8dC7m29ezSvDpump", attentions: 1, alerts: 0 },
   { name: "PRESI", logo: "💵", score: 92, address: "14o8ZXUMjhEvxtQTyEk5RRBYH98N7TqNeX7WHoEtSsUp", attentions: 0, alerts: 1 },
-  { name: "daddy", logo: "✖️", score: 88, address: "4Cnk9EPnW5ixfLZatCPJjDB1PUtcRpVVgTQukm9epump", attentions: 1, alerts: 2 },
+  { name: "DADDY", logo: "✖️", score: 88, address: "4Cnk9EPnW5ixfLZatCPJjDB1PUtcRpVVgTQukm9epump", attentions: 1, alerts: 2 },
 ];
 
 const chains: Chain[] = [
-  { name: "BNB", logo: "🟨" },
-  { name: "Ethereum", logo: "🔷" },
   { name: "Solana", logo: "🟣" },
+  { name: "Ethereum", logo: "🔷" },
 ];
 
 export default function CryptoScan() {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedChain, setSelectedChain] = useState<Chain>(chains[1]); // Default to Ethereum chain
+  const [selectedChain, setSelectedChain] = useState<Chain>(chains[0]); // Default to Ethereum chain
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   return (

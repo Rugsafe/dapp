@@ -23,11 +23,11 @@ const tokenOverview = [
 export default function TokenPage() {
   const { chain, address } = useParams(); // Get the dynamic `chain` and `address` from URL params
 
-  const selectedChain = chain || 'solana'; // Default to 'solana' if no chain is provided
+  const selectedChain = 'solana'; //chain || 'solana'; // Default to 'solana' if no chain is provided
 
   return (
     <TokenScannerInterface
-      tokenName={`Sample Token on ${selectedChain}`} // Display Solana or the selected chain
+      tokenName={`Token on ${selectedChain}`} // Display Solana or the selected chain
       tokenAddress={address as string}
       scanItems={scanItems}
       scanScore={100}
