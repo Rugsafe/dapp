@@ -81,7 +81,8 @@ const TokenScannerInterface: React.FC<TokenScannerInterfaceProps> = ({
           </div>
           <div>
             <h1 className="text-xl font-bold">{tokenName}</h1>
-            <p className="text-gray-400 text-sm">{tokenAddress}</p>
+            <span className="hidden md:inline">{tokenAddress}</span>
+            <span className="md:hidden">{truncateAddress(tokenAddress)}</span>
           </div>
         </div>
         <div className="flex space-x-2">
