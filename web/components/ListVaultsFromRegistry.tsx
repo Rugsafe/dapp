@@ -247,7 +247,7 @@ const ListVaultsFromRegistry: React.FC = () => {
                             <div className="flex items-center mb-4">
                                 {/* Circular chain logo */}
                                 <img
-                                    src="assets/img/solana.png"
+                                    src="/assets/img/solana.png"
                                     alt="Chain Logo"
                                     className="w-10 h-10 rounded-full mr-4" 
                                 />

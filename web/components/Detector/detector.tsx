@@ -38,7 +38,7 @@ export default function CryptoScan() {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-4 md:p-8">
       <h1 className="text-3xl md:text-4xl font-bold text-center mb-4">Rug Detector</h1>
-      <p className="text-center mb-8">Instant multi-chain token security checks</p>
+      <p className="text-center mb-8">Multi-chain token analysis and auto-response through intents.</p>
 
       <div className="max-w-3xl mx-auto mb-8">
         <div className="flex items-center bg-gray-800 rounded-md">
