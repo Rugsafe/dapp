@@ -1,4 +1,4 @@
-"use client";
+"use client"; // Ensure this is a client component
 
 import { Search, ChevronDown, AlertTriangle, Eye } from "lucide-react";
 import { useState } from "react";
@@ -19,10 +19,10 @@ interface Chain {
 }
 
 const tokens: Token[] = [
-  { name: "ETH", logo: "🔷", score: 95, address: "0x742...3a1b", attentions: 2, alerts: 0 },
-  { name: "BTC", logo: "🟠", score: 98, address: "bc1q...9ph7", attentions: 1, alerts: 0 },
-  { name: "USDT", logo: "💵", score: 92, address: "0x55d...7b9c", attentions: 0, alerts: 1 },
-  { name: "XRP", logo: "✖️", score: 88, address: "rB3g...Y9Dp", attentions: 1, alerts: 2 },
+  { name: "flocka", logo: "🔷", score: 5, address: "9n8b1EXLCA8Z22mf7pjLKVNzuQgGbyPfLrmFQvEcHeSU", attentions: 2, alerts: 0 },
+  { name: "JASON", logo: "🟠", score: 5, address: "6SUryVEuDz5hqAxab6QrGfbzWvjN8dC7m29ezSvDpump", attentions: 1, alerts: 0 },
+  { name: "PRESI", logo: "💵", score: 92, address: "14o8ZXUMjhEvxtQTyEk5RRBYH98N7TqNeX7WHoEtSsUp", attentions: 0, alerts: 1 },
+  { name: "daddy", logo: "✖️", score: 88, address: "4Cnk9EPnW5ixfLZatCPJjDB1PUtcRpVVgTQukm9epump", attentions: 1, alerts: 2 },
 ];
 
 const chains: Chain[] = [
@@ -37,8 +37,8 @@ export default function CryptoScan() {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
-      <h1 className="text-4xl font-bold text-center mb-4">CryptoScan</h1>
+    <div className="min-h-screen bg-gray-900 text-gray-100 p-4 md:p-8">
+      <h1 className="text-3xl md:text-4xl font-bold text-center mb-4">CryptoScan</h1>
       <p className="text-center mb-8">Instant multi-chain token security checks</p>
 
       <div className="max-w-3xl mx-auto mb-8">
@@ -83,7 +83,7 @@ export default function CryptoScan() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
         {tokens.map((token) => (
           <Link
             key={token.name}
@@ -98,7 +98,7 @@ export default function CryptoScan() {
                 </div>
                 <span className="text-green-400 font-bold">{token.score}</span>
               </div>
-              <div className="text-sm text-gray-400 mb-2">{token.address}</div>
+              <div className="text-sm text-gray-400 mb-2 break-all">{token.address}</div>
               <div className="flex justify-between text-sm">
                 <span className="flex items-center">
                   <Eye className="mr-1 h-4 w-4" /> {token.attentions} Attentions
