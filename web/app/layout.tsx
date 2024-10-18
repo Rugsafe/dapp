@@ -21,7 +21,9 @@ const links: { label: string; path: string; dropdown?: { label: string; path: st
       { label: 'Perpetuals', path: '/perps' },
       { label: 'Liquidity', path: '/liquidity' }, // Example route
     ],
-  }
+  },
+  {label: 'Detection', path: '/detection'},
+ 
   // { label: 'Clusters', path: '/clusters' },
 ];
 
