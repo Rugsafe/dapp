@@ -22,7 +22,7 @@ const links: { label: string; path: string; dropdown?: { label: string; path: st
       { label: 'Liquidity', path: '/liquidity' }, // Example route
     ],
   },
-  {label: 'Detector', path: '/detector'},
+  {label: 'Detection', path: '/detection'},
  
   // { label: 'Clusters', path: '/clusters' },
 ];
