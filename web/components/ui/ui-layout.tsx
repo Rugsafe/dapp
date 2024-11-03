@@ -27,7 +27,7 @@ export function UiLayout({
       <div className="navbar bg-base-300 text-neutral-content">
         <div className="flex-1">
           <Link className="btn btn-ghost normal-case text-xl" href="/">
-            <img className="h-8" alt="Logo" src="/assets/img/rugsafe.png" />
+            <img className="h-12" alt="Logo" src="/assets/img/rugsafe.png" />
           </Link>
         </div>
         <div className="flex-none hidden md:block">
