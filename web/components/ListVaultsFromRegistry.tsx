@@ -183,7 +183,7 @@ const ListVaultsFromRegistry: React.FC = () => {
                 ASSOCIATED_TOKEN_PROGRAM_ID // Associated token program ID
             );
             
-            window.alert(`vaultPubkey: ${vaultPubkey}`)
+            ///// DEBUG window.alert(`vaultPubkey: ${vaultPubkey}`)
             
             // const userTokenAPubkey = new PublicKey("Dof5p3fEhZhXttrPeEPiKwLoac5ftRyJJnma24ZYF4qZ");
             const userTokenAPubkey = await getAssociatedTokenAddress(
@@ -194,7 +194,7 @@ const ListVaultsFromRegistry: React.FC = () => {
                 ASSOCIATED_TOKEN_PROGRAM_ID // Associated token program ID
             );
             
-            window.alert(`userTokenAPubkey: ${userTokenAPubkey}`)
+            ///// DEBUG window.alert(`userTokenAPubkey: ${userTokenAPubkey}`)
 
             // const userATokenAPubkey = new PublicKey(vault.mint);
             const userATokenAPubkey = await getAssociatedTokenAddress(
@@ -205,7 +205,7 @@ const ListVaultsFromRegistry: React.FC = () => {
                 ASSOCIATED_TOKEN_PROGRAM_ID // Associated token program ID
             );
 
-            window.alert(`userATokenAPubkey: ${userATokenAPubkey}`)
+            ///// DEBUG window.alert(`userATokenAPubkey: ${userATokenAPubkey}`)
 
             const depositAmount = 100; // Example deposit amount
     
