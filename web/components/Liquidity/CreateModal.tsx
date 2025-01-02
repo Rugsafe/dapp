@@ -19,7 +19,7 @@ function CreateModal({ isOpen, onClose, handleCreateAmmConfig, handleCreatePool 
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
         <div className="bg-[#1a1b23] rounded-lg p-6 w-96 max-w-full">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl text-white font-bold">I want to...</h2>
+            <h2 className="text-xl text-white font-bold">Choose Pool Type</h2>
             <button onClick={onClose} className="text-gray-400 hover:text-white">
               <X size={20} />
             </button>
@@ -65,12 +65,12 @@ function CreateModal({ isOpen, onClose, handleCreateAmmConfig, handleCreatePool 
               Burn & Earn (CLMM)
             </button> */}
 
-            {/* <button 
+            <button 
                 onClick={handleCreateAmmConfig}
                 className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-2 rounded-lg"
               >
               Create AMM Config
-            </button> */}
+            </button>
           </div>
           
           <div className="mt-6">
