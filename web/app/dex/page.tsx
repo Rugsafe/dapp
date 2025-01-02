@@ -51,9 +51,10 @@ const tokens: Token[] = [
   { symbol: 'ALEPH', name: 'aleph.im v2', icon: 'aleph-icon-url' },
   { symbol: 'ALT', name: 'AltLayer', icon: 'altlayer-icon-url' },
   { symbol: 'AMP', name: 'Amp', icon: 'amp-icon-url' },
-  { symbol: 'Flocka', name: 'Flocka Coin', icon: '🌌' },
+  { symbol: 'aFlocka', name: 'AntiFlocka', icon: '🌌' },
   { symbol: 'Solana', name: 'Stardust', icon: '✨' },
   { symbol: 'NOVA', name: 'Supernova', icon: '💥' },
+  { symbol: 'USDC', name: 'USDC', icon: '💥' },
 ];
 
 const Swap: React.FC = () => {
@@ -62,7 +63,7 @@ const Swap: React.FC = () => {
   const connection = new Connection("http://127.0.0.1:8899");
   
   const [fromToken, setFromToken] = useState<Token>(tokens[8]); // Flocka
-  const [toToken, setToToken] = useState<Token>(tokens[9]); // Solana
+  const [toToken, setToToken] = useState<Token>(tokens[11]); // USDC
   const [amount, setAmount] = useState<string>('2');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<'from' | 'to'>('from');
