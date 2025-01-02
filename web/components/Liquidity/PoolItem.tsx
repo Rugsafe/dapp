@@ -5,7 +5,31 @@ import { PoolItemProps } from "@/types";
 import { Star, Zap } from 'lucide-react';
 import Link from 'next/link';
 
-const PoolItem: React.FC<PoolItemProps> = ({name, liquidity, volume, fees, apr}) => {
+interface PoolItemPropsWithAction extends PoolItemProps {
+  onAddLiquidity: (amount0: number, amount1: number) => Promise<void>;
+  onOpenDepositModal: () => void;
+}
+
+const PoolItem: React.FC<PoolItemPropsWithAction> = ({
+    name, 
+    liquidity, 
+    volume, 
+    fees, 
+    apr, 
+    poolAccount,
+    tokenVault0,
+    tokenVault1,
+    tokenMint0,   
+    tokenMint1,
+    onAddLiquidity,
+    onOpenDepositModal
+  }) => {
+  const handleDepositClick = () => {
+    // const amount0 = 100; // Replace with user input
+    // const amount1 = 200; // Replace with user input
+    // onAddLiquidity(amount0, amount1);
+    onOpenDepositModal();
+  };
   return (
     <div className="bg-purple-800 p-3 rounded-lg mb-2">
       {/* Mobile layout */}
@@ -56,7 +80,7 @@ const PoolItem: React.FC<PoolItemProps> = ({name, liquidity, volume, fees, apr})
               <Zap size={14} className="text-purple-300" />
             </button>
           </Link>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-xs transition duration-300">
+          <button onClick={handleDepositClick} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-xs transition duration-300">
             Deposit
           </button>
         </div>
