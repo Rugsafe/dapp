@@ -4,13 +4,18 @@ import PoolItem from "./PoolItem";
 import { PoolItemProps } from "@/types";
 
 interface PoolListProps {
-    pools: PoolItemProps[]
+    pools: PoolItemProps[],
+    handleAddLiquidity: (pool: PoolItemProps, amount0: number, amount1: number) => Promise<void>;
+    onOpenDepositModal: (pool: PoolItemProps) => void;
 }
 
-const PoolList: React.FC<PoolListProps> = ({ pools }) => {
+const PoolList: React.FC<PoolListProps> = ({ pools, handleAddLiquidity, onOpenDepositModal }) => {
     return (
         <div className="relative">
-            <div className="bg-purple-800 p-3 rounded-t-lg mb-1 flex items-center text-purple-300 text-sm sticky top-0" style={{ zIndex: 10 }}>
+            <div
+                className="bg-purple-800 p-3 rounded-t-lg mb-1 flex items-center text-purple-300 text-sm sticky top-0"
+                style={{ zIndex: 10 }} // Lower than modal's z-index
+            >
                 <div className="w-1/4">Pool</div>
                 <div className="w-1/5 text-right">Liquidity</div>
                 <div className="w-1/5 text-right">Volume 24H</div>
@@ -18,6 +23,7 @@ const PoolList: React.FC<PoolListProps> = ({ pools }) => {
                 <div className="w-1/6 text-right">APR 24H</div>
                 <div className="w-1/6"></div>
             </div>
+
 
  {/* {isLoading ? (
                 <p className="text-white">Loading pools...</p>
@@ -46,7 +52,12 @@ const PoolList: React.FC<PoolListProps> = ({ pools }) => {
 
             <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
                 {pools.map((pool, index) => (
-                    <PoolItem key={index} {...pool} />
+                    <PoolItem
+                        key={index}
+                        {...pool}
+                        onAddLiquidity={(amount0, amount1) => handleAddLiquidity(pool, amount0, amount1)}
+                        onOpenDepositModal={() => onOpenDepositModal(pool)}
+                    />
                 ))}
             </div>
         </div>
