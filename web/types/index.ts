@@ -165,4 +165,9 @@ export interface PoolItemProps {
   volume: string
   fees: string
   apr: string
+  poolAccount: PublicKey; 
+  tokenVault0: PublicKey; 
+  tokenVault1: PublicKey; 
+  tokenMint0: PublicKey; 
+  tokenMint1: PublicKey; 
 }
